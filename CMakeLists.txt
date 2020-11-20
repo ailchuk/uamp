@@ -8,10 +8,5 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
+add_subdirectory(3dparty)
 add_subdirectory(app)
-
-target_include_directories(${TARGET} PUBLIC ${PROJECT_BINARY_DIR})

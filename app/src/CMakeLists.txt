@@ -1,12 +1,9 @@
-set(SOURCES uamp.cpp)
+file(GLOB SOURCE *.cpp *.h *.ui)
 
-set(HEADERS uamp.h)
+add_library(src STATIC ${SOURCE})
 
-set(UI uamp.ui)
-
-add_library(src ${SOURCES} ${HEADERS} ${UI})
-
-target_link_libraries(src PRIVATE Qt${QT_VERSION_MAJOR}::Core
+target_link_libraries(src Qt${QT_VERSION_MAJOR}::Core
+    tag
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Gui
 )
