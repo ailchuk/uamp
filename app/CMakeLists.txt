@@ -16,8 +16,7 @@ set(CMAKE_AUTORCC ON)
 
 find_library(TAGLIB 3dtarty/libtag)
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Multimedia REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Quick Sql)
 
 

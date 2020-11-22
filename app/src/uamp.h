@@ -12,9 +12,6 @@
 //#include <QMimeData>
 //#include <QDragEnterEvent>
 
-#include "Playlist.h"
-#include "Track.h"
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class UAmp; }
 QT_END_NAMESPACE
