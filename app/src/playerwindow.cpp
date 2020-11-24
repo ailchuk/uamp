@@ -313,7 +313,7 @@ void PlayerWindow::setMediaForPlayback(const QModelIndex &selectedProxyIndex)
 
         QModelIndex trackLocationIndex = selectedProxyIndex.siblingAtColumn(libraryProxyModel->getLocationColumn());
         QUrl trackLocation = libraryProxyModel->data(trackLocationIndex).toUrl();
-        mediaPlayer->setMedia(trackLocation);
+        mediaPlayer->setMedia(QUrl::fromLocalFile(trackLocation.path()));
     }
     else
     {
