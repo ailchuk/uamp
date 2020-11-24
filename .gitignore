@@ -1,6 +1,9 @@
 # F*cking store
 .DS_Store
 
+#autosave
+*.autosave
+
 #build files
 build/
 uamp.app/
