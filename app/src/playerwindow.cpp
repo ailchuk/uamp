@@ -127,10 +127,6 @@ void PlayerWindow::initializeViewMenu()
     ui->viewLocation->setChecked(!ui->libraryView->isColumnHidden(libraryProxyModel->getLocationColumn()));
 }
 
-void PlayerWindow::setRewind() {
-    mediaPlayer->setPosition(mediaPlayer->position() - 10000);
-}
-
 void PlayerWindow::setUpConnections()
 {
     // File menu connections
