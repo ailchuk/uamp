@@ -166,7 +166,10 @@ void PlayerWindow::setUpConnections()
 
 void PlayerWindow::onAddToLibraryActionTriggered()
 {
-    QStringList filePaths = QFileDialog::getOpenFileNames(this, "Add file(s) to library");
+    QStringList filePaths = QFileDialog::getOpenFileNames(this,
+                                                          tr("Add file(s) to library"),
+                                                          QString(),
+                                                          tr("Audio-Files(*.mp3 *.mp4 *.wav *.flac *.ogg)"));
     for (const QString &filePath : filePaths)
     {
         TagLibFileRefWrapper tagLibFileRefWrapper(filePath);
