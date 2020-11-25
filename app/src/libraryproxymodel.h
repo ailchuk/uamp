@@ -31,6 +31,8 @@ public:
     int getDurationColumn() const { return durationColumn; }
     int getLocationColumn() const { return locationColumn; }
 
+    int getLibSize() const { return size; };
+
 private:
     int trackIdColumn;
     int titleColumn;
@@ -42,6 +44,7 @@ private:
     int durationColumn;
     int locationColumn;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+    int size;
 };
 
 #endif // LIBRARYMODEL_H

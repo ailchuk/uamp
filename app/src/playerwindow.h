@@ -7,7 +7,9 @@
 #include <QMediaPlayer>
 #include <QSettings>
 #include <QSqlTableModel>
+#include <QFileSystemModel>
 
+enum class Mode { NONE, REPEATALL, REPEATONE, SHUFFLE };
 
 namespace Ui {
 class PlayerWindow;
@@ -28,6 +30,7 @@ private:
     QSqlTableModel *librarySourceModel = nullptr;
     LibraryProxyModel *libraryProxyModel = nullptr;
     QModelIndex srcIndexOfCurrMedia;
+    Mode mode;
 
     void initializeMediaPlayer();
     void initializeLibraryModels();
@@ -51,6 +54,8 @@ private:
                             const QString &location);
 
     void initializeViewMenu();
+    void setShuffleMode();
+    void setRepeatMode();
 
 private slots:
     void onAddToLibraryActionTriggered();
@@ -65,7 +70,6 @@ private slots:
     void updateTimePassed(int position);
     void customContextMenu(const QPoint &point);
     void deleteFromLibrary();
-
 };
 
 #endif // PLAYERWINDOW_H

@@ -12,7 +12,8 @@
 
 PlayerWindow::PlayerWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::PlayerWindow)
+    ui(new Ui::PlayerWindow),
+    mode(Mode::NONE)
 {
     ui->setupUi(this);
     restoreWindowState();
@@ -127,6 +128,33 @@ void PlayerWindow::initializeViewMenu()
     ui->viewLocation->setChecked(!ui->libraryView->isColumnHidden(libraryProxyModel->getLocationColumn()));
 }
 
+void PlayerWindow::setRepeatMode()
+{
+    qDebug() << "REPMODE";
+    mode == Mode::NONE ? qDebug() << "mode:NONE" : mode == Mode::REPEATALL ? qDebug() << "mode:REPEATALL" : qDebug() << "mode:REPONE";
+    if (mode == Mode::NONE) {
+        mode = Mode::REPEATALL;
+        qDebug() << "repeatone";
+        return;
+    } else if (mode == Mode::REPEATALL) {
+        mode = Mode::REPEATONE;
+        qDebug() << "repeatall";
+        return;
+    } else if (mode == Mode::REPEATONE) {
+        mode = Mode::NONE;
+        qDebug() << "none";
+        return;
+    }
+    // turn off shuffle;
+}
+
+void PlayerWindow::setShuffleMode()
+{
+    if (mode != Mode::REPEATONE)
+        mode = Mode::SHUFFLE;
+    qDebug() << "shuffle";
+}
+
 void PlayerWindow::setUpConnections()
 {
     // File menu connections
@@ -154,13 +182,14 @@ void PlayerWindow::setUpConnections()
     connect(ui->controls, &PlayerControls::playOrPauseClicked, this, &PlayerWindow::onPlayOrPauseSignal);
     connect(ui->controls, &PlayerControls::nextClicked, this, &PlayerWindow::setNextMediaForPlayback);
     connect(ui->controls, &PlayerControls::prevClicked, this, &PlayerWindow::setPreviousMediaForPlayback);
-
     connect(ui->controls, &PlayerControls::rewindClicked, this, [this] () {
         mediaPlayer->setPosition(mediaPlayer->position() - 10000);
     });
     connect(ui->controls, &PlayerControls::fast_forwardClicked, this, [this] () {
         mediaPlayer->setPosition(mediaPlayer->position() + 10000);
     });
+    connect(ui->controls, &PlayerControls::setRepeatMode, this, &PlayerWindow::setRepeatMode);
+    connect(ui->controls, &PlayerControls::setShuffleMode, this, &PlayerWindow::setShuffleMode);
 }
 
 
@@ -169,7 +198,7 @@ void PlayerWindow::onAddToLibraryActionTriggered()
     QStringList filePaths = QFileDialog::getOpenFileNames(this,
                                                           tr("Add file(s) to library"),
                                                           QString(),
-                                                          tr("Audio-Files(*.mp3 *.mp4 *.wav *.flac *.ogg)"));
+                                                          tr("Audio-Files(*.mp3 *.mp4 *.wav)"));
     for (const QString &filePath : filePaths)
     {
         TagLibFileRefWrapper tagLibFileRefWrapper(filePath);
@@ -350,10 +379,29 @@ void PlayerWindow::onMediaPlayerStatusChanged(QMediaPlayer::MediaStatus status)
 void PlayerWindow::setNextMediaForPlayback()
 {
     QModelIndex proxyIndexOfCurrMedia = libraryProxyModel->mapFromSource(srcIndexOfCurrMedia);
-    QModelIndex proxyIndexOfNextMedia = proxyIndexOfCurrMedia.siblingAtRow(proxyIndexOfCurrMedia.row()+1);
-    setMediaForPlayback(proxyIndexOfNextMedia);
-}
+    QModelIndex proxyIndexOfNextMedia = proxyIndexOfCurrMedia.siblingAtRow(proxyIndexOfCurrMedia.row() + 1);
 
+    if (mode == Mode::REPEATALL) {
+        if (!proxyIndexOfNextMedia.isValid()) { // if next media invalid - play from start
+            proxyIndexOfNextMedia = proxyIndexOfCurrMedia.siblingAtRow(0);
+        }
+        setMediaForPlayback(proxyIndexOfNextMedia);
+        qDebug() << "repeatALL_NEXT";
+    } else if (mode == Mode::REPEATONE) { // repeat curr song
+        setMediaForPlayback(proxyIndexOfCurrMedia);
+        qDebug() << "repeatONE_NEXT";
+    } else if (mode == Mode::SHUFFLE) { // play shuffle
+        int pos = rand() % (libraryProxyModel->rowCount());
+
+        pos = pos == proxyIndexOfCurrMedia.row() ? rand() % (libraryProxyModel->rowCount()) : pos;
+        proxyIndexOfNextMedia = proxyIndexOfCurrMedia.siblingAtRow(pos);
+        setMediaForPlayback(proxyIndexOfNextMedia);
+        qDebug() << "shuffle";
+    } else if (mode == Mode::NONE) {
+        qDebug() << "Mode::None";
+        setMediaForPlayback(proxyIndexOfNextMedia);
+    }
+}
 
 void PlayerWindow::setPreviousMediaForPlayback()
 {

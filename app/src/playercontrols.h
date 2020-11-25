@@ -4,7 +4,8 @@
 #include <QMediaPlayer>
 #include <QSettings>
 #include <QWidget>
-
+#include <QFileSystemModel>
+#include <QMessageBox>
 
 namespace Ui {
 class PlayerControls;
@@ -18,6 +19,8 @@ public:
     explicit PlayerControls(QWidget *parent = nullptr);
     ~PlayerControls();
     const int DEFAULT_VOLUME = 100;
+    bool isRepeat;
+    bool isShuffle;
 
 private:
     Ui::PlayerControls *ui;
@@ -35,8 +38,12 @@ signals:
     void prevClicked();
     void progressSliderMoved(int value);
     void volumeChanged(int value);
+    void setRepeatMode();
+    void setShuffleMode();
 
 public slots:
+    void repeatClicked();
+    void shuffleClicked();
     void updatePlaybackState(QMediaPlayer::State mediaState);
     void setupProgressSlider(int mediaDurationInMillisec);
     void updateProgressSlider(int position);
