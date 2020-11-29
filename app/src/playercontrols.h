@@ -21,13 +21,11 @@ public:
     explicit PlayerControls(QWidget *parent = nullptr);
     ~PlayerControls();
     const int DEFAULT_VOLUME = 100;
-    bool isRepeat;
-    bool isShuffle;
-    PMode mode;
 
 private:
     Ui::PlayerControls *ui;
     QSettings session{"session.ini", QSettings::Format::IniFormat};
+    PMode mode;
     void setIcons();
     void restoreVolumeSliderState();
     void setConnections();

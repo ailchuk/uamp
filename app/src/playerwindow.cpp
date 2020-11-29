@@ -148,15 +148,10 @@ void PlayerWindow::setRepeatMode()
         qDebug() << "none";
         return;
     }
-    // turn off shuffle;
 }
 
 void PlayerWindow::setShuffleMode()
 {
-//    if (mode != Mode::REPEATALL || mode != Mode::REPEATONE)
-//        mode = Mode::SHUFFLE;
-//    else if (mode == Mode::SHUFFLE)
-//        mode = Mode::NONE;
     if (mode == Mode::SHUFFLE)
         mode = Mode::NONE;
     else if (mode == Mode::NONE)

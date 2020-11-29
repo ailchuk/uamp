@@ -5,10 +5,8 @@
 
 PlayerControls::PlayerControls(QWidget *parent) :
     QWidget(parent),
-    isRepeat(false),
-    isShuffle(false),
-    mode(PMode::NONE),
-    ui(new Ui::PlayerControls)
+    ui(new Ui::PlayerControls),
+    mode(PMode::NONE)
 {
     ui->setupUi(this);
     setIcons();
@@ -75,7 +73,7 @@ void PlayerControls::shuffleClicked()
         ui->shuffle->setIcon(QIcon(pic_off));
         mode = PMode::NONE;
     }
-    qDebug() << "shuffle Clicked" << isRepeat;
+    qDebug() << "shuffle Clicked";
 }
 
 void PlayerControls::repeatClicked()
