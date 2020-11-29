@@ -131,14 +131,17 @@ void PlayerWindow::initializeViewMenu()
 void PlayerWindow::setRepeatMode()
 {
     qDebug() << "REPMODE";
-    mode == Mode::NONE ? qDebug() << "mode:NONE" : mode == Mode::REPEATALL ? qDebug() << "mode:REPEATALL" : qDebug() << "mode:REPONE";
+    mode == Mode::NONE ?
+    qDebug() << "mode:NONE" : mode == Mode::REPEATALL ?
+    qDebug() << "mode:REPEATALL" : mode == Mode::REPEATONE ?
+    qDebug() << "mode:REPONE" : qDebug() << "mode::SHUFFLE";
     if (mode == Mode::NONE) {
         mode = Mode::REPEATALL;
-        qDebug() << "repeatone";
+        qDebug() << "repeatall";
         return;
     } else if (mode == Mode::REPEATALL) {
         mode = Mode::REPEATONE;
-        qDebug() << "repeatall";
+        qDebug() << "repeatone";
         return;
     } else if (mode == Mode::REPEATONE) {
         mode = Mode::NONE;
@@ -150,7 +153,13 @@ void PlayerWindow::setRepeatMode()
 
 void PlayerWindow::setShuffleMode()
 {
-    if (mode != Mode::REPEATONE)
+//    if (mode != Mode::REPEATALL || mode != Mode::REPEATONE)
+//        mode = Mode::SHUFFLE;
+//    else if (mode == Mode::SHUFFLE)
+//        mode = Mode::NONE;
+    if (mode == Mode::SHUFFLE)
+        mode = Mode::NONE;
+    else if (mode == Mode::NONE)
         mode = Mode::SHUFFLE;
     qDebug() << "shuffle";
 }

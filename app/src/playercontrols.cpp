@@ -7,6 +7,7 @@ PlayerControls::PlayerControls(QWidget *parent) :
     QWidget(parent),
     isRepeat(false),
     isShuffle(false),
+    mode(PMode::NONE),
     ui(new Ui::PlayerControls)
 {
     ui->setupUi(this);
@@ -33,9 +34,6 @@ void PlayerControls::setIcons()
 //    ui->repeat->setIcon(QIcon(QFileSystemModel(this).rootDirectory().absolutePath() + "/app/resources/repeat.png")); // for macos
     ui->shuffle->setIcon(QIcon(QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/shuffle.png")); // for win
     ui->repeat->setIcon(QIcon(QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/repeat.png")); // for win
-
-    ui->shuffle->icon().setThemeName(QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/shuffle.png");
-    ui->repeat->icon().setThemeName(QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/repeat.png");
 }
 
 
@@ -62,27 +60,27 @@ void PlayerControls::setConnections()
 
 void PlayerControls::shuffleClicked()
 {
-    isShuffle = isShuffle ? false : true;
-    if (isRepeat) {
+    if (mode == PMode::REPEATALL || mode == PMode::REPEATONE) {
          QMessageBox::warning(this, "Invalid option.", "Please turn off repeating", QMessageBox::Ok);
          return;
     }
+
     QString pic_on = QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/shuffle_on.png";
     QString pic_off = QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/shuffle.png";
 
-    if (ui->shuffle->icon().themeName() == pic_on) {
-        ui->shuffle->setIcon(QIcon(pic_off));
-        ui->shuffle->icon().setThemeName(pic_off);
-    } else {
+    if (mode == PMode::NONE) {
         ui->shuffle->setIcon(QIcon(pic_on));
-        ui->shuffle->icon().setThemeName(pic_on);
+        mode = PMode::SHUFFLE;
+    } else {
+        ui->shuffle->setIcon(QIcon(pic_off));
+        mode = PMode::NONE;
     }
     qDebug() << "shuffle Clicked" << isRepeat;
 }
 
 void PlayerControls::repeatClicked()
-{
-    if (isShuffle) {
+{    
+    if (mode == PMode::SHUFFLE) {
         QMessageBox::warning(this, "Invalid option.", "Please turn off shuffle", QMessageBox::Ok);
         return;
     }
@@ -90,25 +88,21 @@ void PlayerControls::repeatClicked()
     QString pic_repeat = QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/repeat.png";
     QString pic_repeat_on = QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/repeat_on.png";
     QString pic_repeat_one = QFileSystemModel(this).rootDirectory().absolutePath() + "/uamp/app/resources/repeat_one.png";
-    QString themeName = ui->repeat->icon().themeName();
 
-    if (themeName == pic_repeat) {
+    if (mode == PMode::NONE) {
         ui->repeat->setIcon(QIcon(pic_repeat_on));
-        ui->repeat->icon().setThemeName(pic_repeat_on);
         qDebug() << "set pic_repeat_on";
-        isRepeat = true;
+        mode = PMode::REPEATALL;
         return;
-    } else if (themeName == pic_repeat_on) {
+    } else if (mode == PMode::REPEATALL) {
         ui->repeat->setIcon(QIcon(pic_repeat_one));
-        ui->repeat->icon().setThemeName(pic_repeat_one);
         qDebug() << "set pic_repeat_one";
-        isRepeat = true;
+        mode = PMode::REPEATONE;
         return;
-    } else if (themeName == pic_repeat_one) {
+    } else if (mode == PMode::REPEATONE) {
         ui->repeat->setIcon(QIcon(pic_repeat));
-        ui->repeat->icon().setThemeName(pic_repeat);
         qDebug() << "set pic_repeat";
-        isRepeat = false;
+        mode = PMode::NONE;
         return;
     }
 }

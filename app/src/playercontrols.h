@@ -7,6 +7,8 @@
 #include <QFileSystemModel>
 #include <QMessageBox>
 
+enum class PMode { NONE, REPEATONE, REPEATALL, SHUFFLE };
+
 namespace Ui {
 class PlayerControls;
 }
@@ -21,6 +23,7 @@ public:
     const int DEFAULT_VOLUME = 100;
     bool isRepeat;
     bool isShuffle;
+    PMode mode;
 
 private:
     Ui::PlayerControls *ui;
