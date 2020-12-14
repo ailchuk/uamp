@@ -558,3 +558,20 @@ void PlayerWindow::saveLibraryViewState()
 {
     session.setValue("LibraryView/state", ui->libraryView->header()->saveState());
 }
+
+void PlayerWindow::on_pushButton_clicked()
+{
+    m_playlist_name = ui->textEdit->text();
+    if (!m_playlist_name.isEmpty() && m_set_playlist.count(m_playlist_name.toStdString()) == 0) {
+        ui->listWidget->addItem(m_playlist_name);
+        m_set_playlist.insert(m_playlist_name.toStdString());
+        ui->textEdit->setText("");
+    }
+    else if (m_set_playlist.count(m_playlist_name.toStdString()) > 0) {
+        QMessageBox::warning(this, "Warning!","Playlist with this name already exist!");
+        return;
+    }
+    else {
+        QMessageBox::warning(this, "Warning!","Enter the name of new playlist!");
+    }
+}

@@ -2,7 +2,7 @@
 #define PLAYERWINDOW_H
 
 #include "libraryproxymodel.h"
-
+#include <set>
 #include <QMainWindow>
 #include <QMediaPlayer>
 #include <QSettings>
@@ -31,6 +31,9 @@ private:
     LibraryProxyModel *libraryProxyModel = nullptr;
     QModelIndex srcIndexOfCurrMedia;
     Mode mode;
+    QString m_playlist_name;
+    QString m_cur_pname;
+    std::set<std::string> m_set_playlist;
 
     void initializeMediaPlayer();
     void initializeLibraryModels();
@@ -70,6 +73,7 @@ private slots:
     void updateTimePassed(int position);
     void customContextMenu(const QPoint &point);
     void deleteFromLibrary();
+    void on_pushButton_clicked();
 };
 
 #endif // PLAYERWINDOW_H
