@@ -3,7 +3,13 @@
         <file>next.png</file>
         <file>previous.png</file>
         <file>play_pause.png</file>
+        <file>pause.png</file>
+        <file>play.png</file>
         <file>rewind_left.png</file>
         <file>rewind_right.png</file>
+        <file>stop.png</file>
+        <file>mute.png</file>
+        <file>volume_up.png</file>
+        <file>volume_down.png</file>
     </qresource>
 </RCC>
