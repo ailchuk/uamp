@@ -59,10 +59,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
                MACOSX_PACKAGE_LOCATION "Resources")
     add_executable(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${APP_ICON_MACOSX} main.cpp ${RESOURCES})
 else()
-    #set(APP_ICON_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/app_win32.rc") <- That code is crush building
-    #add_executable(${CMAKE_PROJECT_NAME} main.cpp ${RESOURCES} ${APP_ICON_RESOURCE})
+    #set(APP_ICON_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/app_win32.rc")
 
-    add_executable(${CMAKE_PROJECT_NAME} main.cpp)
+    add_executable(${CMAKE_PROJECT_NAME} main.cpp ${RESOURCES} ${APP_ICON_RESOURCE})
 endif()
 
 target_link_libraries(
