@@ -11,5 +11,6 @@
         <file>mute.png</file>
         <file>volume_up.png</file>
         <file>volume_down.png</file>
+        <file>cover.jpg</file>
     </qresource>
 </RCC>

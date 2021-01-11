@@ -81,6 +81,9 @@
        <property name="textFormat">
         <enum>Qt::RichText</enum>
        </property>
+       <property name="pixmap">
+        <pixmap resource="../resources/myres.qrc">:/cover.jpg</pixmap>
+       </property>
        <property name="scaledContents">
         <bool>true</bool>
        </property>

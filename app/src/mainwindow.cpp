@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     m_playListModel = new QStandardItemModel(this);
     ui->playlistView->setModel(m_playListModel);
-    m_playListModel->setHorizontalHeaderLabels(QStringList()  << tr("Audio Track")
+    m_playListModel->setHorizontalHeaderLabels(QStringList()<< tr("Audio Track")
                                                             << tr("File Path"));
     ui->playlistView->hideColumn(1);
     ui->playlistView->verticalHeader()->setVisible(false);
@@ -66,8 +66,6 @@ MainWindow::MainWindow(QWidget *parent)
             updateDurationInfo(progress / 1000);
     });
 
-
-
     // Drag slider
     ui->horizontalSliderSongProgress->setRange(0, m_player->duration() / 1000);
     connect(ui->horizontalSliderSongProgress, &QSlider::sliderMoved, this, [this](int seconds) {
@@ -75,12 +73,45 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "volume progress changed: " + QString::number(seconds);
     });
 
+    // Error handling for m_player (redirecting)
+    connect(m_player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error),
+            this, [this](){
+        m_player->stop();
+        const QString errorString = m_player->errorString();
+        QMessageBox msgBox;
+        msgBox.setText(errorString.isEmpty()
+                       ? tr("Unknown error #%1").arg(int(m_player->error()))
+                       : tr("Error: %1").arg(errorString));
+        msgBox.exec();
+    });
+
+    connect(m_player, &QMediaPlayer::stateChanged, this, [this](QMediaPlayer::State state) {
+        if (state == QMediaPlayer::PlayingState) {
+            ui->pushButtonPlayPause->setIcon(QIcon(":/pause.png"));
+        }
+        else {
+            ui->pushButtonPlayPause->setIcon(QIcon(":/play.png"));
+        }
+    });
+
    metaDataChanged();
+}
+
+
+void MainWindow::on_pushButtonPlayPause_clicked() {
+    if (m_player->state() == QMediaPlayer::State::PausedState) {
+        m_player->play();
+    }
+    else {
+        m_player->pause();
+    }
 }
 
 void MainWindow::metaDataChanged()
 {
+    qDebug() << "metaDataChanged invoked";
     if (m_player->isMetaDataAvailable()) {
+        qDebug() << "there is some metadata...";
 //        setTrackInfo(QString("%1 - %2")
 //                .arg(m_player->metaData(QMediaMetaData::AlbumArtist).toString())
 //                .arg(m_player->metaData(QMediaMetaData::Title).toString()));
@@ -130,19 +161,12 @@ MainWindow::~MainWindow()
 {
 }
 
-
-void MainWindow::on_actionAdd_track_triggered()
-{
-    // Using the file selection dialog to make multiple selections of mp3 files
-    QStringList files = QFileDialog::getOpenFileNames(this,
-                                                      tr("Open files"),
-                                                      QString(),
-                                                      tr("Audio Files (*.mp3; *.flac)"));
-
-
-
+void MainWindow::save_files(QStringList files) {
     // Next, set the data names and file paths
     // into the playlist and table displaying the playlist
+    qDebug() << "Connect finished dialog";
+    qDebug() << files;
+
     foreach (QString filePath, files) {
         QList<QStandardItem *> items;
         items.append(new QStandardItem(QDir(filePath).dirName()));
@@ -152,18 +176,23 @@ void MainWindow::on_actionAdd_track_triggered()
     }
 }
 
-// connect(ui->pushButtonPlayPause, &QPushButton::clicked, m_player, &QMediaPlayer::play);
-void MainWindow::on_pushButtonPlayPause_clicked()
+
+void MainWindow::on_actionAdd_track_triggered()
 {
-    if (this->playPauseBtnStatus == false) {
-        this->playPauseBtnStatus = true;
-        ui->pushButtonPlayPause->setIcon(QIcon(":/pause.png"));
-        m_player->play();
-    }
-    else {
-        this->playPauseBtnStatus = false;
-        ui->pushButtonPlayPause->setIcon(QIcon(":/play.png"));
-        m_player->pause();
-    }
+
+
+    // Using the file selection dialog to make multiple selections of mp3 files
+    QStringList files;
+    QFileDialog fileDialog(this);
+    connect(&fileDialog, &QFileDialog::filesSelected, this, &MainWindow::save_files);
+    fileDialog.setWindowTitle(tr("Open File"));
+    fileDialog.setNameFilter(tr("Audio Files (*.mp3 *.flac)"));
+    fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath()));
+    fileDialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
+//    fileDialog.open(this, SLOT(save_files(QStringList)));
+    fileDialog.exec();
+    qDebug() << "open send";
+
+
 
 }

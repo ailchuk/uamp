@@ -6,8 +6,11 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QThread>
+#include <QFuture>
 #include <QTime>
+#include <QtConcurrent/QtConcurrent>
 #include <QMediaMetaData>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,10 +31,10 @@ private slots:
 
     void on_pushButtonPlayPause_clicked();
 
+    void save_files(QStringList files);
+
 private:
     Ui::MainWindow *ui;
-
-    bool playPauseBtnStatus = false;
 
     QStandardItemModel  *m_playListModel = nullptr;   // Data Model for Playlist
     QMediaPlayer        *m_player = nullptr;

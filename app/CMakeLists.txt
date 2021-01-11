@@ -5,8 +5,8 @@ endif()
 add_compile_options(
     -Wall
     -Wextra
-    -Werror
-    -Wpedantic
+    #-Werror
+    #-Wpedantic
     -DTAGLIB_STATIC
 )
 
