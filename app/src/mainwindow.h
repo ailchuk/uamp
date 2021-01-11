@@ -17,8 +17,6 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class PlaylistModel;
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -35,7 +33,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    PlaylistModel  *m_playListModel = nullptr;   // Data Model for Playlist
+    QStandardItemModel  *m_playListModel = nullptr;   // Data Model for Playlist
     QMediaPlayer        *m_player = nullptr;
     QMediaPlaylist      *m_playlist = nullptr;
 

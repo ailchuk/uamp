@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "./playlistmodel.h"
 #include <QFileDialog>
 #include <QDir>
 
@@ -10,24 +9,26 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_playListModel = new PlaylistModel(this);
-    m_player = new QMediaPlayer(this);          // Init player
-    m_player->setAudioRole(QAudio::Role::MusicRole);
-    m_player->setPlaylist(m_playlist);
-    m_player->setVolume(0);
-    m_playlist = new QMediaPlaylist(m_player);  // Init playlist
-    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);  // Set circular play mode playlist
-    m_playListModel->setPlaylist(m_playlist);
-
+    m_playListModel = new QStandardItemModel(this);
     ui->playlistView->setModel(m_playListModel);
-    ui->playlistView->setCurrentIndex(m_playListModel->index(m_playlist->currentIndex(), 0));
-
+    m_playListModel->setHorizontalHeaderLabels(QStringList()  << tr("Audio Track")
+                                                           << tr("File Path"));
     ui->playlistView->hideColumn(1);
     ui->playlistView->verticalHeader()->setVisible(false);
     ui->playlistView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->playlistView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->playlistView->horizontalHeader()->setStretchLastSection(true);
+
+    m_player = new QMediaPlayer(this);          // Init player
+    m_player->setAudioRole(QAudio::Role::MusicRole);
+    qInfo() << "Supported audio roles:";
+    for (QAudio::Role role : m_player->supportedAudioRoles())
+       qInfo() << "    " << role;
+    m_playlist = new QMediaPlaylist(m_player);  // Init playlist
+    m_player->setPlaylist(m_playlist);
+    m_player->setVolume(0);
+    m_playlist->setPlaybackMode(QMediaPlaylist::Loop);  // Set circular play mode playlist
 
     connect(ui->actionAdd_track, &QAction::triggered, this, &MainWindow::on_actionAdd_track_triggered);
 
@@ -175,22 +176,25 @@ static bool isPlaylist(const QUrl &url) // Check for ".m3u" playlists.
 
 void MainWindow::on_actionAdd_track_triggered()
 {
-    QFileDialog fileDialog(this);
-    fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
-    fileDialog.setWindowTitle(tr("Open Files"));
-    QStringList supportedMimeTypes = m_player->supportedMimeTypes();
-    if (!supportedMimeTypes.isEmpty()) {
-        supportedMimeTypes.append("audio/x-m3u"); // MP3 playlists
-        fileDialog.setMimeTypeFilters(supportedMimeTypes);
-    }
-    fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath()));
-    if (fileDialog.exec() == QDialog::Accepted) {
-        for (auto &url: fileDialog.selectedUrls()) {
-            if (isPlaylist(url))
-                m_playlist->load(url);
+    // Using the file selection dialog to make multiple selections of mp3 files
+        QStringList files = QFileDialog::getOpenFileNames(this,
+                                                          tr("Open files"),
+                                                          QString(),
+                                                          tr("Audio Files (*.mp3; *.flac)"));
+
+
+
+        // Next, set the data names and file paths
+        // into the playlist and table displaying the playlist
+        foreach (QString filePath, files) {
+            QList<QStandardItem *> items;
+            items.append(new QStandardItem(QDir(filePath).dirName()));
+            items.append(new QStandardItem(filePath));
+            m_playListModel->appendRow(items);
+            if (isPlaylist(QUrl(filePath)))
+                m_playlist->load(QUrl(filePath));
             else
-                m_playlist->addMedia(url);
+                m_playlist->addMedia(QUrl(filePath));
         }
-    }
     qDebug() << "open send";
 }
