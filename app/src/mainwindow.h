@@ -11,10 +11,13 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QMediaMetaData>
 #include <QMessageBox>
+#include <QMediaPlaylist>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+class PlaylistModel;
 
 class MainWindow : public QMainWindow
 {
@@ -27,16 +30,12 @@ public:
 
 
 private slots:
-    void on_actionAdd_track_triggered();
-
     void on_pushButtonPlayPause_clicked();
-
-    void save_files(QStringList files);
 
 private:
     Ui::MainWindow *ui;
 
-    QStandardItemModel  *m_playListModel = nullptr;   // Data Model for Playlist
+    PlaylistModel  *m_playListModel = nullptr;   // Data Model for Playlist
     QMediaPlayer        *m_player = nullptr;
     QMediaPlaylist      *m_playlist = nullptr;
 
@@ -47,5 +46,6 @@ private:
     void metaDataChanged();
     void setTrackInfo(const QString &info);
     void updateDurationInfo(qint64 currentInfo);
+    void on_actionAdd_track_triggered();
 };
 #endif // MAINWINDOW_H
