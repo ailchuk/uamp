@@ -74,5 +74,3 @@ target_link_libraries(
     Qt${QT_VERSION_MAJOR}::Multimedia
     Qt${QT_VERSION_MAJOR}::Sql
 )
-
-#target_include_directories(${TARGET} PUBLIC ${PROJECT_BINARY_DIR})

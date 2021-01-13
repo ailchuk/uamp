@@ -93,17 +93,26 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
-    QAudioDeviceInfo device = QAudioDeviceInfo::defaultOutputDevice();
-    QAudioFormat desire_audio_romat = device.preferredFormat();
+    const auto deviceInfos = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
+    for (const QAudioDeviceInfo &deviceInfo : deviceInfos)
+        qDebug() << "Device name: " << deviceInfo.deviceName();
 
-    m_audioFileStream = new AudioFileStream;
-    if (!m_audioFileStream->init(desire_audio_romat))
-    {
-        qDebug( ) << "!desire_audio_romat";
+    qDebug() << "supported Codecs";
+    for (const auto& it : QAudioDeviceInfo::defaultOutputDevice().supportedCodecs()) {
+        qDebug() << it;
     }
-
-    QAudioOutput* m_audioOutput = new QAudioOutput(desire_audio_romat);
-    m_audioOutput->start(m_audioFileStream);
+    qDebug() << "supported Sample Sizes";
+    for (const auto& it : QAudioDeviceInfo::defaultOutputDevice().supportedSampleSizes()) {
+        qDebug() << it;
+    }
+    qDebug() << "supported Sample Types";
+    for (const auto& it : QAudioDeviceInfo::defaultOutputDevice().supportedSampleTypes()) {
+        qDebug() << it;
+    }
+    qDebug() << "supported Sample Rates";
+    for (const auto& it : QAudioDeviceInfo::defaultOutputDevice().supportedSampleRates()) {
+        qDebug() << it;
+    }
 
    metaDataChanged();
 }
@@ -203,48 +212,65 @@ void MainWindow::on_actionAdd_track_triggered()
             else {
                 //m_playlist->addMedia(QUrl(filePath));
 
-                /*
-//                QFile audio_file(filePath);
-//                    if(audio_file.open(QIODevice::ReadOnly)) {
-//                        audio_file.seek(32); // skip wav header
-//                        QByteArray audio_data = audio_file.readAll();
-//                        audio_file.close();
 
-//                        QBuffer* audio_buffer = new QBuffer(&audio_data);
-//                        audio_buffer->open(QIODevice::ReadOnly);
-//                        audio_buffer->seek(0);
-//                        qDebug() << audio_buffer->size();
 
-//                        QAudioFormat format;
+                QFile audio_file(filePath);
+                audio_file.open(QIODevice::ReadOnly);
+                //audio_file.seek(32); // skip wav header
 
-//                        format.setSampleSize(16);
-//                        format.setSampleRate(44100);
-//                        format.setChannelCount(2);
-//                        format.setCodec("audio/pcm");
-//                        format.setByteOrder(QAudioFormat::LittleEndian);
-//                        format.setSampleType(QAudioFormat::UnSignedInt);
+                // initialize parameters
+                int sampleRate = 96000;   // sample rate
 
-//                        QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
-//                        if (!info.isFormatSupported(format)) {
-//                            qWarning()<<"raw audio format not supported by backend, cannot play audio.";
-//                            return;
-//                        }
-//                        qDebug() << info.deviceName();
+                // --- transfer QVector data to QByteBuffer
+                QByteArray* byteBuffer = new QByteArray(audio_file.readAll());  // create a new instance of QByteArray class (in the heap, dynamically arranged in memory), and set its pointer to byteBuffer
+                qDebug() << byteBuffer->size();
+                audio_file.close();
 
-//                        QAudioOutput* output = new QAudioOutput(info, format);
-//                        output->start(audio_buffer);
-//                        // Create the device and start playing...
+                // create and setup a QAudioFormat object
+                QAudioFormat audioFormat;
+                audioFormat.setSampleRate(sampleRate);
+                audioFormat.setChannelCount(2);
+                audioFormat.setSampleSize(32);   // set the sample size in bits. We set it to 32 bis, because we set SampleType to float (one float has 4 bytes ==> 32 bits)
+                audioFormat.setCodec("audio/pcm");
+                audioFormat.setByteOrder(QAudioFormat::LittleEndian);
+                audioFormat.setSampleType(QAudioFormat::Float);   // use Float, to have a better resolution than SignedInt or UnSignedInt
 
-//                        // ...then wait for the sound to finish
-//                        QEventLoop loop;
-//                        QObject::connect(output, SIGNAL(stateChanged(QAudio::State)), &loop, SLOT(quit()));
-//                        do {
-//                            loop.exec();
-//                        } while(output->state() == QAudio::ActiveState);
-//                    }
-*/
+                QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
 
-                m_audioFileStream->play(filePath);
+
+
+
+                // create a QAudioDeviceInfo object, to make sure that our audioFormat is supported by the device
+                QAudioDeviceInfo deviceInfo(QAudioDeviceInfo::defaultOutputDevice());
+                if(!deviceInfo.isFormatSupported(audioFormat))
+                {
+                    audioFormat = deviceInfo.nearestFormat(audioFormat);
+                    qWarning() << "Raw audio format not supported by backend, cannot play audio.";
+                }
+
+                // Make a QBuffer with our QByteArray
+                QBuffer* input = new QBuffer(byteBuffer);
+                input->open(QIODevice::ReadOnly);   // set the QIODevice to read-only
+                qDebug() << input->size();
+
+                // Create an audio output with our QAudioFormat
+                QAudioOutput* audio = new QAudioOutput(audioFormat, this);
+
+                // connect up signal stateChanged to a lambda to get feedback
+                connect(audio, &QAudioOutput::stateChanged, [audio, input](QAudio::State newState)
+                {
+                    if (newState == QAudio::IdleState)   // finished playing (i.e., no more data)
+                    {
+                        qDebug() << "finished playing sound";
+                        delete audio;
+                        delete input;
+                        //delete byteBuffer;  // I tried to delete byteBuffer pointer (because it may leak memories), but got compiler error. I need to figure this out later.
+                    }
+                    // should also handle more states, e.g., errors. I need to figure out on how to do this later.
+                });
+
+                // start the audio (i.e., play sound from the QAudioOutput object that we just created)
+                audio->start(input);
 
             }
 
