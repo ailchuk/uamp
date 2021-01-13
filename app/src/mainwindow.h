@@ -13,6 +13,12 @@
 #include <QMessageBox>
 #include <QMediaPlaylist>
 
+#include <QSound>
+#include <QAudioOutput>
+#include "AudioFileStream.h"
+
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -36,6 +42,8 @@ private:
     QStandardItemModel  *m_playListModel = nullptr;   // Data Model for Playlist
     QMediaPlayer        *m_player = nullptr;
     QMediaPlaylist      *m_playlist = nullptr;
+    AudioFileStream* m_audioFileStream = nullptr;
+
 
 private:
     int m_duration;

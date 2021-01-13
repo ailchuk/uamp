@@ -22,9 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_player = new QMediaPlayer(this);          // Init player
     m_player->setAudioRole(QAudio::Role::MusicRole);
-    qInfo() << "Supported audio roles:";
-    for (QAudio::Role role : m_player->supportedAudioRoles())
-       qInfo() << "    " << role;
     m_playlist = new QMediaPlaylist(m_player);  // Init playlist
     m_player->setPlaylist(m_playlist);
     m_player->setVolume(0);
@@ -35,20 +32,20 @@ MainWindow::MainWindow(QWidget *parent)
     // подключаем кнопки управления к слотам управления
     connect(ui->verticalSliderVolume, &QSlider::valueChanged, m_playlist, [this](int value) {
         m_player->setVolume(value);
-        qDebug() << "volume changed: " + QString::number(value);
+        qDebug() << "=>>>>>>>>>> volume changed: " + QString::number(value);
     });
     connect(ui->pushButtonPrevious, &QPushButton::clicked, m_playlist, &QMediaPlaylist::previous);
     connect(ui->pushButtonNext, &QPushButton::clicked, m_playlist, &QMediaPlaylist::next);
     connect(ui->pushButtonStop, &QPushButton::clicked, m_player, &QMediaPlayer::stop);
 
     // change icon (doesn't work)
-    connect(m_player, QOverload<>::of(&QMediaPlayer::metaDataChanged), this, &MainWindow::metaDataChanged);
+    connect(m_player, &QMediaPlayer::currentMediaChanged, this, &MainWindow::metaDataChanged);
 
     // When you doubleclick on the track in the table set the track in the playlist
     // TODO take tags prom file here
     connect(ui->playlistView, &QTableView::doubleClicked, [this](const QModelIndex &index){
-        m_playlist->setCurrentIndex(index.row());
-        qDebug() << "double clicke on playListView";
+        m_playlist->setCurrentIndex(index.row());        
+        qDebug() << "=>>>>>>>>>> double clicke on playListView";
 
     });
 
@@ -74,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->horizontalSliderSongProgress->setRange(0, m_player->duration() / 1000);
     connect(ui->horizontalSliderSongProgress, &QSlider::sliderMoved, this, [this](int seconds) {
         m_player->setPosition(seconds * 1000);
-        qDebug() << "volume progress changed: " + QString::number(seconds);
+        qDebug() << "=>>>>>>>>>> volume progress changed: " + QString::number(seconds);
     });
 
     // Error handling for m_player (redirecting)
@@ -82,21 +79,31 @@ MainWindow::MainWindow(QWidget *parent)
             this, [this](){
         m_player->stop();
         const QString errorString = m_player->errorString();
-        QMessageBox msgBox;
-        msgBox.setText(errorString.isEmpty()
+        qDebug() << (errorString.isEmpty()
                        ? tr("Unknown error #%1").arg(int(m_player->error()))
                        : tr("Error: %1").arg(errorString));
-        msgBox.exec();
     });
 
     connect(m_player, &QMediaPlayer::stateChanged, this, [this](QMediaPlayer::State state) {
         if (state == QMediaPlayer::PlayingState) {
             ui->pushButtonPlayPause->setIcon(QIcon(":/pause.png"));
         }
-        else if (state == QMediaPlayer::PausedState) {
+        else {
             ui->pushButtonPlayPause->setIcon(QIcon(":/play.png"));
         }
     });
+
+    QAudioDeviceInfo device = QAudioDeviceInfo::defaultOutputDevice();
+    QAudioFormat desire_audio_romat = device.preferredFormat();
+
+    m_audioFileStream = new AudioFileStream;
+    if (!m_audioFileStream->init(desire_audio_romat))
+    {
+        qDebug( ) << "!desire_audio_romat";
+    }
+
+    QAudioOutput* m_audioOutput = new QAudioOutput(desire_audio_romat);
+    m_audioOutput->start(m_audioFileStream);
 
    metaDataChanged();
 }
@@ -114,9 +121,9 @@ void MainWindow::on_pushButtonPlayPause_clicked() {
 
 void MainWindow::metaDataChanged()
 {
-    qDebug() << "metaDataChanged invoked";
+    qDebug() << "=>>>>>>>>>> metaDataChanged invoked";
     if (m_player->isMetaDataAvailable()) {
-        qDebug() << "there is some metadata...";
+        qDebug() << "=>>>>>>>>>> there is some metadata...";
 //        setTrackInfo(QString("%1 - %2")
 //                .arg(m_player->metaData(QMediaMetaData::AlbumArtist).toString())
 //                .arg(m_player->metaData(QMediaMetaData::Title).toString()));
@@ -193,8 +200,54 @@ void MainWindow::on_actionAdd_track_triggered()
             m_playListModel->appendRow(items);
             if (isPlaylist(QUrl(filePath)))
                 m_playlist->load(QUrl(filePath));
-            else
-                m_playlist->addMedia(QUrl(filePath));
+            else {
+                //m_playlist->addMedia(QUrl(filePath));
+
+                /*
+//                QFile audio_file(filePath);
+//                    if(audio_file.open(QIODevice::ReadOnly)) {
+//                        audio_file.seek(32); // skip wav header
+//                        QByteArray audio_data = audio_file.readAll();
+//                        audio_file.close();
+
+//                        QBuffer* audio_buffer = new QBuffer(&audio_data);
+//                        audio_buffer->open(QIODevice::ReadOnly);
+//                        audio_buffer->seek(0);
+//                        qDebug() << audio_buffer->size();
+
+//                        QAudioFormat format;
+
+//                        format.setSampleSize(16);
+//                        format.setSampleRate(44100);
+//                        format.setChannelCount(2);
+//                        format.setCodec("audio/pcm");
+//                        format.setByteOrder(QAudioFormat::LittleEndian);
+//                        format.setSampleType(QAudioFormat::UnSignedInt);
+
+//                        QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+//                        if (!info.isFormatSupported(format)) {
+//                            qWarning()<<"raw audio format not supported by backend, cannot play audio.";
+//                            return;
+//                        }
+//                        qDebug() << info.deviceName();
+
+//                        QAudioOutput* output = new QAudioOutput(info, format);
+//                        output->start(audio_buffer);
+//                        // Create the device and start playing...
+
+//                        // ...then wait for the sound to finish
+//                        QEventLoop loop;
+//                        QObject::connect(output, SIGNAL(stateChanged(QAudio::State)), &loop, SLOT(quit()));
+//                        do {
+//                            loop.exec();
+//                        } while(output->state() == QAudio::ActiveState);
+//                    }
+*/
+
+                m_audioFileStream->play(filePath);
+
+            }
+
         }
-    qDebug() << "open send";
+    qDebug() << "=>>>>>>>>>> open send";
 }
