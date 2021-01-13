@@ -210,68 +210,7 @@ void MainWindow::on_actionAdd_track_triggered()
             if (isPlaylist(QUrl(filePath)))
                 m_playlist->load(QUrl(filePath));
             else {
-                //m_playlist->addMedia(QUrl(filePath));
-
-
-
-                QFile audio_file(filePath);
-                audio_file.open(QIODevice::ReadOnly);
-                //audio_file.seek(32); // skip wav header
-
-                // initialize parameters
-                int sampleRate = 96000;   // sample rate
-
-                // --- transfer QVector data to QByteBuffer
-                QByteArray* byteBuffer = new QByteArray(audio_file.readAll());  // create a new instance of QByteArray class (in the heap, dynamically arranged in memory), and set its pointer to byteBuffer
-                qDebug() << byteBuffer->size();
-                audio_file.close();
-
-                // create and setup a QAudioFormat object
-                QAudioFormat audioFormat;
-                audioFormat.setSampleRate(sampleRate);
-                audioFormat.setChannelCount(2);
-                audioFormat.setSampleSize(32);   // set the sample size in bits. We set it to 32 bis, because we set SampleType to float (one float has 4 bytes ==> 32 bits)
-                audioFormat.setCodec("audio/pcm");
-                audioFormat.setByteOrder(QAudioFormat::LittleEndian);
-                audioFormat.setSampleType(QAudioFormat::Float);   // use Float, to have a better resolution than SignedInt or UnSignedInt
-
-                QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
-
-
-
-
-                // create a QAudioDeviceInfo object, to make sure that our audioFormat is supported by the device
-                QAudioDeviceInfo deviceInfo(QAudioDeviceInfo::defaultOutputDevice());
-                if(!deviceInfo.isFormatSupported(audioFormat))
-                {
-                    audioFormat = deviceInfo.nearestFormat(audioFormat);
-                    qWarning() << "Raw audio format not supported by backend, cannot play audio.";
-                }
-
-                // Make a QBuffer with our QByteArray
-                QBuffer* input = new QBuffer(byteBuffer);
-                input->open(QIODevice::ReadOnly);   // set the QIODevice to read-only
-                qDebug() << input->size();
-
-                // Create an audio output with our QAudioFormat
-                QAudioOutput* audio = new QAudioOutput(audioFormat, this);
-
-                // connect up signal stateChanged to a lambda to get feedback
-                connect(audio, &QAudioOutput::stateChanged, [audio, input](QAudio::State newState)
-                {
-                    if (newState == QAudio::IdleState)   // finished playing (i.e., no more data)
-                    {
-                        qDebug() << "finished playing sound";
-                        delete audio;
-                        delete input;
-                        //delete byteBuffer;  // I tried to delete byteBuffer pointer (because it may leak memories), but got compiler error. I need to figure this out later.
-                    }
-                    // should also handle more states, e.g., errors. I need to figure out on how to do this later.
-                });
-
-                // start the audio (i.e., play sound from the QAudioOutput object that we just created)
-                audio->start(input);
-
+                m_playlist->addMedia(QUrl(filePath));
             }
 
         }
