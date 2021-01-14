@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->playlistView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->playlistView->horizontalHeader()->setStretchLastSection(true);
 
+
     m_player = new QMediaPlayer(this);          // Init player
     m_player->setAudioRole(QAudio::Role::MusicRole);
     m_playlist = new QMediaPlaylist(m_player);  // Init playlist
@@ -29,9 +30,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionAdd_track, &QAction::triggered, this, &MainWindow::on_actionAdd_track_triggered);
 
+    connect(ui->pushButtonMute, &QPushButton::clicked, m_player, [this](){
+        m_muted = !m_muted;
+        (m_muted)?m_player->setVolume(0):m_player->setVolume(ui->verticalSliderVolume->value());
+    });
+
     // подключаем кнопки управления к слотам управления
     connect(ui->verticalSliderVolume, &QSlider::valueChanged, m_playlist, [this](int value) {
-        m_player->setVolume(value);
+        if (!m_muted)
+            m_player->setVolume(value);
         qDebug() << "=>>>>>>>>>> volume changed: " + QString::number(value);
     });
     connect(ui->pushButtonPrevious, &QPushButton::clicked, m_playlist, &QMediaPlaylist::previous);
@@ -71,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->horizontalSliderSongProgress->setRange(0, m_player->duration() / 1000);
     connect(ui->horizontalSliderSongProgress, &QSlider::sliderMoved, this, [this](int seconds) {
         m_player->setPosition(seconds * 1000);
-        qDebug() << "=>>>>>>>>>> volume progress changed: " + QString::number(seconds);
+        qDebug() << "=>>>>>>>>>> song progress changed: " + QString::number(seconds);
     });
 
     // Error handling for m_player (redirecting)
@@ -132,6 +139,7 @@ void MainWindow::metaDataChanged()
 {
     qDebug() << "=>>>>>>>>>> metaDataChanged invoked";
     if (m_player->isMetaDataAvailable()) {
+        // doesn't work
         qDebug() << "=>>>>>>>>>> there is some metadata...";
 //        setTrackInfo(QString("%1 - %2")
 //                .arg(m_player->metaData(QMediaMetaData::AlbumArtist).toString())

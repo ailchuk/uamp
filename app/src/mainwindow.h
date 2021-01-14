@@ -43,6 +43,7 @@ private:
 
 private:
     int m_duration;
+    bool m_muted = false;
 
 private:
     void metaDataChanged();
