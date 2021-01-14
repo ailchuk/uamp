@@ -1,5 +1,7 @@
 file(GLOB SOURCE *.cpp *.h *.ui)
 
+include_directories(.)
+
 add_library(src STATIC ${SOURCE})
 
 target_link_libraries(src Qt${QT_VERSION_MAJOR}::Core

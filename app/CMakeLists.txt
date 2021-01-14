@@ -5,8 +5,8 @@ endif()
 add_compile_options(
     -Wall
     -Wextra
-    -Werror
-    -Wpedantic
+    #-Werror
+    #-Wpedantic
     -DTAGLIB_STATIC
 )
 
@@ -16,7 +16,7 @@ set(CMAKE_AUTORCC ON)
 
 find_library(TAGLIB 3dtarty/libtag)
 
-find_package(Qt5 COMPONENTS Widgets Multimedia REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Widgets Multimedia REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Quick Sql)
 
 
@@ -59,10 +59,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
                MACOSX_PACKAGE_LOCATION "Resources")
     add_executable(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${APP_ICON_MACOSX} main.cpp ${RESOURCES})
 else()
-    #set(APP_ICON_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/app_win32.rc") <- That code is crush building
-    #add_executable(${CMAKE_PROJECT_NAME} main.cpp ${RESOURCES} ${APP_ICON_RESOURCE})
+    #set(APP_ICON_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/app_win32.rc")
 
-    add_executable(${CMAKE_PROJECT_NAME} main.cpp)
+    add_executable(${CMAKE_PROJECT_NAME} main.cpp ${RESOURCES} ${APP_ICON_RESOURCE})
 endif()
 
 target_link_libraries(
@@ -75,5 +74,3 @@ target_link_libraries(
     Qt${QT_VERSION_MAJOR}::Multimedia
     Qt${QT_VERSION_MAJOR}::Sql
 )
-
-#target_include_directories(${TARGET} PUBLIC ${PROJECT_BINARY_DIR})
