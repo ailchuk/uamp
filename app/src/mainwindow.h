@@ -12,6 +12,7 @@
 #include <QMediaMetaData>
 #include <QMessageBox>
 #include <QMediaPlaylist>
+#include "musiccontrolinterface.h"
 
 #include <QSound>
 #include <QAudioOutput>
@@ -28,18 +29,16 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
-
 private slots:
     void on_pushButtonPlayPause_clicked();
 
 private:
     Ui::MainWindow *ui;
 
-    QStandardItemModel  *m_playListModel = nullptr;   // Data Model for Playlist
-    QMediaPlayer        *m_player = nullptr;
-    QMediaPlaylist      *m_playlist = nullptr;
-
+    QStandardItemModel      *m_playListModel = nullptr;   // Data Model for Playlist
+    QMediaPlayer            *m_player = nullptr;
+    QMediaPlaylist          *m_playlist = nullptr;
+    MusicControlInterface   *m_musiccontrolinterface = nullptr;
 
 private:
     int m_duration;
@@ -50,5 +49,6 @@ private:
     void setTrackInfo(const QString &info);
     void updateDurationInfo(qint64 currentInfo);
     void on_actionAdd_track_triggered();
+
 };
 #endif // MAINWINDOW_H

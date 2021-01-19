@@ -30,6 +30,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionAdd_track, &QAction::triggered, this, &MainWindow::on_actionAdd_track_triggered);
 
+    m_musiccontrolinterface = new MusicControlInterface(this);
+    this->ui->horizontalLayout_3->addWidget(m_musiccontrolinterface);
+
+    // Volume control
     connect(ui->pushButtonMute, &QPushButton::clicked, m_player, [this](){
         m_muted = !m_muted;
         (m_muted)?m_player->setVolume(0):m_player->setVolume(ui->verticalSliderVolume->value());
@@ -41,9 +45,6 @@ MainWindow::MainWindow(QWidget *parent)
             m_player->setVolume(value);
         qDebug() << "=>>>>>>>>>> volume changed: " + QString::number(value);
     });
-    connect(ui->pushButtonPrevious, &QPushButton::clicked, m_playlist, &QMediaPlaylist::previous);
-    connect(ui->pushButtonNext, &QPushButton::clicked, m_playlist, &QMediaPlaylist::next);
-    connect(ui->pushButtonStop, &QPushButton::clicked, m_player, &QMediaPlayer::stop);
 
     // change icon (doesn't work)
     connect(m_player, &QMediaPlayer::currentMediaChanged, this, &MainWindow::metaDataChanged);
@@ -53,13 +54,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->playlistView, &QTableView::doubleClicked, [this](const QModelIndex &index){
         m_playlist->setCurrentIndex(index.row());        
         qDebug() << "=>>>>>>>>>> double clicke on playListView";
-
     });
 
     // if the current track of the index change in the playlist, set the file name in a special label
-    connect(m_playlist, &QMediaPlaylist::currentIndexChanged, [this](int index){
-        ui->currentTrack->setText(m_playListModel->data(m_playListModel->index(index, 0)).toString());
-    });
+//    connect(m_playlist, &QMediaPlaylist::currentIndexChanged, [this](int index){
+//        ui->currentTrack->setText(m_playListModel->data(m_playListModel->index(index, 0)).toString());
+//    });
 
     // Song duration changed
     connect(m_player, &QMediaPlayer::durationChanged, this, [this](qint64 duration) {
@@ -79,25 +79,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->horizontalSliderSongProgress, &QSlider::sliderMoved, this, [this](int seconds) {
         m_player->setPosition(seconds * 1000);
         qDebug() << "=>>>>>>>>>> song progress changed: " + QString::number(seconds);
-    });
-
-    // Error handling for m_player (redirecting)
-    connect(m_player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error),
-            this, [this](){
-        m_player->stop();
-        const QString errorString = m_player->errorString();
-        qDebug() << (errorString.isEmpty()
-                       ? tr("Unknown error #%1").arg(int(m_player->error()))
-                       : tr("Error: %1").arg(errorString));
-    });
-
-    connect(m_player, &QMediaPlayer::stateChanged, this, [this](QMediaPlayer::State state) {
-        if (state == QMediaPlayer::PlayingState) {
-            ui->pushButtonPlayPause->setIcon(QIcon(":/pause.png"));
-        }
-        else {
-            ui->pushButtonPlayPause->setIcon(QIcon(":/play.png"));
-        }
     });
 
     const auto deviceInfos = QAudioDeviceInfo::availableDevices(QAudio::AudioOutput);
@@ -122,17 +103,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
    metaDataChanged();
-}
-
-
-void MainWindow::on_pushButtonPlayPause_clicked() {
-    if (m_player->state() == QMediaPlayer::State::PausedState
-            || m_player->state() == QMediaPlayer::State::StoppedState) {
-        m_player->play();
-    }
-    else {
-        m_player->pause();
-    }
 }
 
 void MainWindow::metaDataChanged()
@@ -188,6 +158,7 @@ void MainWindow::updateDurationInfo(qint64 currentInfo)
 
 MainWindow::~MainWindow()
 {
+    delete ui;
 }
 
 static bool isPlaylist(const QUrl &url) // Check for ".m3u" playlists.
