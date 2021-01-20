@@ -2,8 +2,9 @@
 #define MUSICCONTROLINTERFACE_H
 
 #include <QWidget>
-#include "mainwindow.h"
 #include <QMediaPlayer>
+
+class MainWindow;
 
 namespace Ui {
 class MusicControlInterface;

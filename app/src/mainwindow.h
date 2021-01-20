@@ -12,10 +12,11 @@
 #include <QMediaMetaData>
 #include <QMessageBox>
 #include <QMediaPlaylist>
-#include "musiccontrolinterface.h"
 
 #include <QSound>
 #include <QAudioOutput>
+
+class MusicControlInterface;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,7 +31,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButtonPlayPause_clicked();
+    //void on_pushButtonPlayPause_clicked();
 
 private:
     Ui::MainWindow *ui;

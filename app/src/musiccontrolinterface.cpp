@@ -1,5 +1,6 @@
 #include "musiccontrolinterface.h"
 #include "ui_musiccontrolinterface.h"
+#include "mainwindow.h"
 
 MusicControlInterface::MusicControlInterface(QWidget *parent) :
     QWidget(parent),
@@ -7,6 +8,8 @@ MusicControlInterface::MusicControlInterface(QWidget *parent) :
 {
     ui->setupUi(this);
     m_main_window = qobject_cast<MainWindow*>(parent);
+
+
 }
 
 void MusicControlInterface::connectWithMainWinow(QMediaPlayer *player, QMediaPlaylist *playlist) {
