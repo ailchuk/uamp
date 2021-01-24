@@ -25,14 +25,15 @@ MainWindow::MainWindow(QWidget *parent)
     // When you doubleclick on the track in the table set the track in the playlist
     // TODO take tags prom file here
     connect(ui->playlistView, &QTableView::doubleClicked, [this](const QModelIndex &index){
-        m_playlist->setCurrentIndex(index.row());
+        m_playlist->setCurrentIndex(index.row());        
         qDebug() << "=>>>>>>>>>> double click on playListView";
     });
 
-    // If the current track of the index change in the playlist, set the file name in a special label
-//    connect(m_playlist, &QMediaPlaylist::currentIndexChanged, [this](int index){
+
+    connect(m_playlist, &QMediaPlaylist::currentIndexChanged, [this](int index){
 //        ui->currentTrack->setText(m_playListModel->data(m_playListModel->index(index, 0)).toString());
-//    });
+        ui->playlistView->selectRow(index);
+    });
 
 
 

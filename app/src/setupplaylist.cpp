@@ -4,7 +4,7 @@
 void MainWindow::setupPlaylistModel() {
     m_playListModel = new QStandardItemModel(this);
     ui->playlistView->setModel(m_playListModel);
-    m_playListModel->setHorizontalHeaderLabels(QStringList()  << tr("Audio Track")
+    m_playListModel->setHorizontalHeaderLabels(QStringList()  << tr("Audio Tracks")
                                                            << tr("File Path"));
     ui->playlistView->hideColumn(1);
     ui->playlistView->verticalHeader()->setVisible(false);
@@ -12,5 +12,6 @@ void MainWindow::setupPlaylistModel() {
     ui->playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->playlistView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->playlistView->horizontalHeader()->setStretchLastSection(true);
+//    ui->playlistView->set
 
 }
