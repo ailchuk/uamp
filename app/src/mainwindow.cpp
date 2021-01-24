@@ -29,14 +29,10 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << "=>>>>>>>>>> double click on playListView";
     });
 
-
+    // Keep current song selected in the listview
     connect(m_playlist, &QMediaPlaylist::currentIndexChanged, [this](int index){
-//        ui->currentTrack->setText(m_playListModel->data(m_playListModel->index(index, 0)).toString());
         ui->playlistView->selectRow(index);
     });
-
-
-
 }
 
 void MainWindow::metaDataChanged()
