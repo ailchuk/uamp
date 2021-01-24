@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_musiccontrolinterface = new MusicControlInterface(this);
     this->ui->horizontalLayout_3->addWidget(m_musiccontrolinterface);
+    m_musiccontrolinterface->connectWithMainWinow(m_player, m_playlist);
 
     // Volume control
     connect(ui->pushButtonMute, &QPushButton::clicked, m_player, [this](){
