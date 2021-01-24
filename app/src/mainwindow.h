@@ -12,9 +12,8 @@
 #include <QMediaMetaData>
 #include <QMessageBox>
 #include <QMediaPlaylist>
-
-#include <QSound>
-#include <QAudioOutput>
+#include <QFileDialog>
+#include <QDir>
 
 class MusicControlInterface;
 
@@ -50,6 +49,10 @@ private:
     void setTrackInfo(const QString &info);
     void updateDurationInfo(qint64 currentInfo);
     void on_actionAdd_track_triggered();
+    void setupPlayer();
+    void setupPlaylistModel();
+    void connectActions();
+
 
 };
 #endif // MAINWINDOW_H

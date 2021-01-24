@@ -165,6 +165,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionAdd_track"/>
+    <addaction name="actionShow_tags"/>
    </widget>
    <addaction name="menuEdit"/>
   </widget>
@@ -172,6 +173,11 @@
   <action name="actionAdd_track">
    <property name="text">
     <string>Add track</string>
+   </property>
+  </action>
+  <action name="actionShow_tags">
+   <property name="text">
+    <string>Show tags</string>
    </property>
   </action>
  </widget>
