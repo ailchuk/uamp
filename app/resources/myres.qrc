@@ -9,8 +9,10 @@
         <file>rewind_right.png</file>
         <file>stop.png</file>
         <file>mute.png</file>
-        <file>volume_up.png</file>
-        <file>volume_down.png</file>
         <file>cover.jpg</file>
+        <file>repeat.png</file>
+        <file>repeat_one.png</file>
+        <file>shuffle.png</file>
+        <file>sequential.png</file>
     </qresource>
 </RCC>
