@@ -15,6 +15,8 @@
 #include <QFileDialog>
 #include <QDir>
 
+#include "database.h"
+
 class MusicControlInterface;
 
 QT_BEGIN_NAMESPACE
@@ -29,6 +31,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void loadSettings(void);
+
+    DataBase *m_db; // database
 private slots:
     //void on_pushButtonPlayPause_clicked();
 
@@ -52,6 +57,7 @@ private:
     void setupPlayer();
     void setupPlaylistModel();
     void connectActions();
+
 
 
 };

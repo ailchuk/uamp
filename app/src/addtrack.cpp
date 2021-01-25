@@ -19,8 +19,9 @@ void MainWindow::on_actionAdd_track_triggered()
             items.append(new QStandardItem(filePath));
             m_playListModel->appendRow(items);
             m_playlist->addMedia(QUrl(filePath));
-
+            m_db->addToQueue(filePath);
         }
     qDebug() << "=>>>>>>>>>> open send";
+    m_db->printQ();
 }
 

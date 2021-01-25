@@ -8,6 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    m_db = new DataBase();
+    m_db->createDataBase();
+
     setupPlaylistModel();
 
     this->setupPlayer();
@@ -17,10 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     connectActions();
 
+
     m_musiccontrolinterface = new MusicControlInterface(this);
     this->ui->horizontalLayout_3->addWidget(m_musiccontrolinterface);
     m_musiccontrolinterface->connectWithMainWinow(m_player, m_playlist);
 
+    m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
 
     // When you doubleclick on the track in the table set the track in the playlist
     // TODO take tags prom file here
@@ -39,10 +44,10 @@ void MainWindow::metaDataChanged()
 {
     qDebug() << "=>>>>>>>>>> metaDataChanged invoked";
 
-
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_db;
 }
