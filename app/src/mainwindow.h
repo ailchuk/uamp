@@ -35,7 +35,8 @@ public:
 
     DataBase *m_db; // database
 private slots:
-    //void on_pushButtonPlayPause_clicked();
+
+    void on_actionShow_tags_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -57,8 +58,6 @@ private:
     void setupPlayer();
     void setupPlaylistModel();
     void connectActions();
-
-
 
 };
 #endif // MAINWINDOW_H

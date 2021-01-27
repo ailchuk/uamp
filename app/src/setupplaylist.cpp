@@ -9,7 +9,7 @@ void MainWindow::setupPlaylistModel() {
     ui->playlistView->hideColumn(1);
     ui->playlistView->verticalHeader()->setVisible(false);
     ui->playlistView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->playlistView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->playlistView->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
     ui->playlistView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->playlistView->horizontalHeader()->setStretchLastSection(true);
 //    ui->playlistView->set

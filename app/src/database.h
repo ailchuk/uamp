@@ -8,7 +8,7 @@
 #include <QStandardItemModel>
 #include <QTreeWidget>
 
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include <vector>
 
 class DataBase {

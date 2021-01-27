@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>249</height>
+    <height>250</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>580</width>
+    <height>250</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -165,6 +171,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionAdd_track"/>
+    <addaction name="actionDelete_tracks"/>
     <addaction name="actionShow_tags"/>
    </widget>
    <addaction name="menuEdit"/>
@@ -172,12 +179,17 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAdd_track">
    <property name="text">
-    <string>Add track</string>
+    <string>Add song</string>
    </property>
   </action>
   <action name="actionShow_tags">
    <property name="text">
     <string>Show tags</string>
+   </property>
+  </action>
+  <action name="actionDelete_tracks">
+   <property name="text">
+    <string>Delete songs</string>
    </property>
   </action>
  </widget>
