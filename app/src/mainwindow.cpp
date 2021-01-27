@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connectActions();
 
-
     m_musiccontrolinterface = new MusicControlInterface(this);
     this->ui->verticalLayout_2->addWidget(m_musiccontrolinterface);
     m_musiccontrolinterface->connectWithMainWinow(m_player, m_playlist);
@@ -47,8 +46,15 @@ void MainWindow::metaDataChanged()
 
 }
 
+void MainWindow::saveSessionToDb() {
+    m_db->addVolume(m_player->volume());
+}
+
 MainWindow::~MainWindow()
 {
+    saveSessionToDb();
+    m_db->printS(); // delete it
+
     delete ui;
     delete m_db;
 }

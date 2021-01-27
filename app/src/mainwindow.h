@@ -60,6 +60,7 @@ private:
     void setupPlayer();
     void setupPlaylistModel();
     void connectActions();
+    void saveSessionToDb();
 
 };
 #endif // MAINWINDOW_H

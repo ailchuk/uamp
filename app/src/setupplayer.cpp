@@ -5,7 +5,8 @@ void MainWindow::setupPlayer() {
     m_player = new QMediaPlayer(this);
 
     m_player->setAudioRole(QAudio::Role::MusicRole);
-    m_player->setVolume(0);
+    m_player->setVolume(m_db->GetVolume());
+    ui->verticalSliderVolume->setValue(m_db->GetVolume());
 
     // Volume control
     connect(ui->pushButtonMute, &QPushButton::clicked, m_player, [this](){

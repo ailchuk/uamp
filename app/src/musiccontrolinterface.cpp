@@ -26,6 +26,7 @@ void MusicControlInterface::connectWithMainWinow(QMediaPlayer *player, QMediaPla
             player->pause();
         }
     });
+
     connect(player, &QMediaPlayer::stateChanged, this, [this](QMediaPlayer::State state) {
         if (state == QMediaPlayer::PlayingState) {
             ui->pushButtonPlayPause->setIcon(QIcon(":/pause.png"));

@@ -16,6 +16,7 @@ void MainWindow::connectActions() {
             else {
                 qDebug() << "Song path";
                 output = true;
+                m_db->deleteTrack(m_playListModel->itemFromIndex(row)->text());
             }
             qDebug() << (m_playListModel->itemFromIndex(row))->text();
         }
