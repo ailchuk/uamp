@@ -34,7 +34,7 @@ public:
         // 1 playlist -> SavePlaylist - Id int pk auto, FK Path text
 
         query.exec("CREATE TABLE IF NOT EXISTS Queue (Id INTEGER PRIMARY KEY AUTOINCREMENT, Path TEXT UNIQUE)");
-        query.exec("CREATE TABLE IF NOT EXISTS Settings (Id INTEGER PRIMARY KEY AUTOINCREMENT, Volume INT, Sort INT, Type INT)");
+        query.exec("CREATE TABLE IF NOT EXISTS Settings (Id INTEGER PRIMARY KEY AUTOINCREMENT, Pos INT, Volume INT, Sort INT, Type INT, SaveTrack TEXT)");
         query.prepare("INSERT INTO Settings (Volume) VALUES (:Vol)");
         query.bindValue(":Vol", 0);
         query.exec();
@@ -42,19 +42,48 @@ public:
 
     }
 
-    bool addVolume(int Vol) {
+    bool addVolumeAndPos(int Vol, int Pos) {
         QSqlQuery query;
 
-        query.prepare("UPDATE Settings SET Volume = :volume WHERE Id = 1;");
+        query.prepare("UPDATE Settings SET Pos = :position, Volume = :volume WHERE Id = 1;");
+        query.bindValue(":position", Pos);
         query.bindValue(":volume", Vol);
 
         return query.exec();
+    }
+
+    bool addSaveTrack(const QString &SaveTrack) {
+
+        QSqlQuery query;
+
+        query.prepare("UPDATE Settings SET SaveTrack = :track WHERE Id = 1;");
+        query.bindValue(":track", SaveTrack);
+
+        return query.exec();
+    }
+
+    QString GetSaveTrack() {
+        QSqlQuery query;
+
+        query.exec("SELECT SaveTrack FROM Settings WHERE ID = 1");
+        query.first();
+
+        return query.value(0).toString();
     }
 
     int GetVolume() {
         QSqlQuery query;
 
         query.exec("SELECT Volume FROM Settings WHERE Id = 1");
+        query.first();
+
+        return query.value(0).toInt();
+    }
+
+    int GetPos() {
+        QSqlQuery query;
+
+        query.exec("SELECT Pos FROM Settings WHERE Id = 1");
         query.first();
 
         return query.value(0).toInt();
@@ -105,6 +134,6 @@ public:
     }
 
     void printS() {
-       qDebug() << GetVolume();
+       qDebug() << GetVolume() << " " << GetPos() << GetSaveTrack();
     }
 };

@@ -26,6 +26,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
 
+    QString savedsong = m_db->GetSaveTrack();
+    if (savedsong.size() > 0) {
+        int i = 0;
+        auto model = ui->playlistView->selectionModel()->selectedIndexes();
+        for (auto row : model) {
+            if (savedsong == m_playListModel->itemFromIndex(row)->text()) {
+                ui->playlistView->selectRow(i / 2);
+                qDebug() << "QQQQQ";
+                break;
+            }
+            i++;
+        }
+        qDebug() << "SQ";
+//        m_playlist->addMedia(QMediaContent(QUrl::fromLocalFile(m_db->GetSaveTrack())));
+//        m_player->setPosition(m_db->GetPos() / 1000);
+
+//        ui->horizontalSliderSongProgress->setValue(m_db->GetPos() / 1000);
+
+//        updateDurationInfo(m_db->GetPos() / 1000);
+    }
     // When you doubleclick on the track in the table set the track in the playlist
     // TODO take tags prom file here
     connect(ui->playlistView, &QTableView::doubleClicked, [this](const QModelIndex &index){
@@ -47,14 +67,14 @@ void MainWindow::metaDataChanged()
 }
 
 void MainWindow::saveSessionToDb() {
-    m_db->addVolume(m_player->volume());
+    m_db->addVolumeAndPos(m_player->volume(), m_player->position());
+    m_db->addSaveTrack(m_playlist->currentMedia().canonicalUrl().toString());
 }
 
 MainWindow::~MainWindow()
 {
     saveSessionToDb();
-    m_db->printS(); // delete it
-
     delete ui;
+    m_db->printS();
     delete m_db;
 }
