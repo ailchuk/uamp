@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     m_musiccontrolinterface = new MusicControlInterface(this);
-    this->ui->horizontalLayout_3->addWidget(m_musiccontrolinterface);
+    this->ui->verticalLayout_2->addWidget(m_musiccontrolinterface);
     m_musiccontrolinterface->connectWithMainWinow(m_player, m_playlist);
 
     m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_playlist, &QMediaPlaylist::currentIndexChanged, [this](int index){
         ui->playlistView->selectRow(index);
     });
+
 }
 
 void MainWindow::metaDataChanged()

@@ -38,6 +38,8 @@ private slots:
 
     void on_actionShow_tags_triggered();
 
+    void on_actionSave_playlist_triggered();
+
 private:
     Ui::MainWindow *ui;
 
