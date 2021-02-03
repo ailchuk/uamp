@@ -27,3 +27,21 @@ void MainWindow::connectActions() {
         }
     });
 }
+
+void MainWindow::on_actionLight_triggered()
+{
+    ui->actionLight->setChecked(true);
+    ui->actionDark->setChecked(false);
+
+    this->setStyleSheet("color: black; background-color: #dde1e5;");
+    ui->playlistView->setStyleSheet("QHeaderView::section { background-color:white } color: black; background-color: #dde1e5;");
+}
+
+void MainWindow::on_actionDark_triggered()
+{
+    ui->actionLight->setChecked(false);
+    ui->actionDark->setChecked(true);
+
+    this->setStyleSheet("color: white; background-color: #323336;");
+    ui->playlistView->setStyleSheet("QHeaderView::section { background-color:#323336 } color: white; background-color: #323336;");
+}

@@ -40,6 +40,10 @@ private slots:
 
     void on_actionSave_playlist_triggered();
 
+    void on_actionLight_triggered();
+
+    void on_actionDark_triggered();
+
 private:
     Ui::MainWindow *ui;
 
