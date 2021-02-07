@@ -18,6 +18,7 @@
 #include "database.h"
 
 class MusicControlInterface;
+class libraryformdialog;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -47,6 +48,7 @@ private:
     QMediaPlayer            *m_player = nullptr;
     QMediaPlaylist          *m_playlist = nullptr;
     MusicControlInterface   *m_musiccontrolinterface = nullptr;
+    libraryformdialog       *m_libraryform = nullptr;
 
 private:
     int m_duration;
