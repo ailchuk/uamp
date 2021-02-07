@@ -18,6 +18,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTreeWidget" name="treeWidget">
+       <property name="animated">
+        <bool>true</bool>
+       </property>
        <column>
         <property name="text">
          <string/>
