@@ -223,7 +223,15 @@
     <addaction name="actionShow_tags"/>
     <addaction name="actionOpenLibrary"/>
    </widget>
+   <widget class="QMenu" name="menuThemes">
+    <property name="title">
+     <string>Appearance</string>
+    </property>
+    <addaction name="actionLight"/>
+    <addaction name="actionDark"/>
+   </widget>
    <addaction name="menuEdit"/>
+   <addaction name="menuThemes"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAdd_track">
@@ -244,6 +252,22 @@
   <action name="actionOpenLibrary">
    <property name="text">
     <string>Open library</string>
+   </property>
+  </action>
+  <action name="actionLight">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Light</string>
+   </property>
+  </action>
+  <action name="actionDark">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dark</string>
    </property>
   </action>
  </widget>

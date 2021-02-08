@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->playlistView->selectRow(index);
     });
 
+    on_actionLight_triggered(); // set as default light theme;
 }
 
 void MainWindow::metaDataChanged()
@@ -63,3 +64,4 @@ MainWindow::~MainWindow()
     delete ui;
     delete m_db;
 }
+
