@@ -18,6 +18,21 @@ public:
     explicit libraryformdialog(QWidget *parent = nullptr);
     ~libraryformdialog();
 
+private slots:
+    void on_pushButtonOpenDir_clicked();
+
+    void on_pushButtonAddTracksFromQueue_clicked();
+
+    void on_pushButtonAddToQueue_clicked();
+
+    void on_pushButtonNewPlaylist_clicked();
+
+    void on_pushButtonSavePlaylist_clicked();
+
+    void on_pushButtonDelete_clicked();
+
+    void on_pushButtonRenamePlaylist_clicked();
+
 private:
     Ui::libraryformdialog *ui;
 
