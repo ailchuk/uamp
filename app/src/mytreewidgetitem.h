@@ -14,6 +14,16 @@ public:
 
     QString Name;
     QString Path;
+
+    static int addToItemHandler(QTreeWidgetItem* item, QString fileName, QString filePath) {
+        if (item) {
+            MyTreeWidgetItem *topLevelItem1 =
+                    new MyTreeWidgetItem(item, fileName, filePath);
+            topLevelItem1->setText(0, fileName);
+            return 0;
+        }
+        return 1;
+    }
 };
 
 #endif // MYTREEWIDGETITEM_H

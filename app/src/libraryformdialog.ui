@@ -52,6 +52,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButtonNewPlaylist">
+         <property name="text">
+          <string>New playlist</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButtonSavePlaylist">
          <property name="text">
           <string>Save playlist</string>
@@ -59,16 +66,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButtonDeletePlaylist">
+        <widget class="QPushButton" name="pushButtonDelete">
          <property name="text">
-          <string>Delete playlist</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonDeleteSongFromPlaylist">
-         <property name="text">
-          <string>Delete song</string>
+          <string>Delete</string>
          </property>
         </widget>
        </item>

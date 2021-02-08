@@ -41,7 +41,7 @@ private slots:
 
     void on_actionSave_playlist_triggered();
 
-private:
+public:
     Ui::MainWindow *ui;
 
     QStandardItemModel      *m_playListModel = nullptr;   // Data Model for Playlist

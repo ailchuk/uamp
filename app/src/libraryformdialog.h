@@ -20,6 +20,7 @@ public:
 
 private:
     Ui::libraryformdialog *ui;
+
     MainWindow* m_main_window = nullptr;
     QMenu m_menu;
 
