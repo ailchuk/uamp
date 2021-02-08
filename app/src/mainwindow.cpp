@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "musiccontrolinterface.h"
+#include "libraryformdialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_musiccontrolinterface = new MusicControlInterface(this);
     this->ui->verticalLayout_2->addWidget(m_musiccontrolinterface);
     m_musiccontrolinterface->connectWithMainWinow(m_player, m_playlist);
+
+    m_libraryform = new libraryformdialog(this);
+    m_libraryform->hide();
+
 
     m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
 

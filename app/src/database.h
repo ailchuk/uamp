@@ -7,8 +7,6 @@
 #include <QSqlQueryModel>
 #include <QStandardItemModel>
 #include <QTreeWidget>
-
-//#include "mainwindow.h"
 #include <vector>
 
 class DataBase {

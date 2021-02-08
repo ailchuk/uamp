@@ -18,6 +18,7 @@
 #include "database.h"
 
 class MusicControlInterface;
+class libraryformdialog;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,17 +41,20 @@ private slots:
 
     void on_actionSave_playlist_triggered();
 
+
+public:
     void on_actionLight_triggered();
 
     void on_actionDark_triggered();
 
-private:
+public:
     Ui::MainWindow *ui;
 
     QStandardItemModel      *m_playListModel = nullptr;   // Data Model for Playlist
     QMediaPlayer            *m_player = nullptr;
     QMediaPlaylist          *m_playlist = nullptr;
     MusicControlInterface   *m_musiccontrolinterface = nullptr;
+    libraryformdialog       *m_libraryform = nullptr;
 
 private:
     int m_duration;
