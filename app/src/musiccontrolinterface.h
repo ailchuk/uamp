@@ -19,6 +19,8 @@ public:
     ~MusicControlInterface();
 
     void connectWithMainWinow(QMediaPlayer *player, QMediaPlaylist *playlist);
+    void isDarkTheme();
+    void isLightTheme();
 
 private:
     Ui::MusicControlInterface *ui;

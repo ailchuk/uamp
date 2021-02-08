@@ -41,8 +41,6 @@ private slots:
 
     void on_actionSave_playlist_triggered();
 
-
-public:
     void on_actionLight_triggered();
 
     void on_actionDark_triggered();

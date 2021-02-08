@@ -28,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_libraryform = new libraryformdialog(this);
     m_libraryform->hide();
 
-
     m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
 
     // When you doubleclick on the track in the table set the track in the playlist
@@ -65,3 +64,26 @@ MainWindow::~MainWindow()
     delete m_db;
 }
 
+void MainWindow::on_actionLight_triggered()
+{
+    this->setStyleSheet("color: black; background-color: #dde1e5;");
+    ui->playlistView->setStyleSheet("QHeaderView::section { background-color:white } color: black; background-color: #dde1e5;");
+    ui->pushButtonMute->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    m_musiccontrolinterface->isLightTheme();
+    ui->actionDark->setChecked(false);
+    ui->actionLight->setChecked(true);
+
+    qDebug() << "light theme";
+}
+
+void MainWindow::on_actionDark_triggered()
+{
+    this->setStyleSheet("color: white; background-color: #323336;");
+    ui->playlistView->setStyleSheet("QHeaderView::section { background-color:#323336 } color: white; background-color: #323336;");
+    ui->pushButtonMute->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    m_musiccontrolinterface->isDarkTheme();
+    ui->actionLight->setChecked(false);
+    ui->actionDark->setChecked(true);
+
+    qDebug() << "dark theme";
+}

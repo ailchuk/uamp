@@ -73,3 +73,27 @@ MusicControlInterface::~MusicControlInterface()
 {
     delete ui;
 }
+
+void MusicControlInterface::isDarkTheme()
+{
+    qDebug() << "isDarkTheme";
+    ui->pushButtonNext->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    ui->pushButtonPlayPause->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    ui->pushButtonPlaylistMode->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    ui->pushButtonPrevious->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    ui->pushButtonRewindLeft->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    ui->pushButtonRewindRight->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+    ui->pushButtonStop->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
+}
+
+void MusicControlInterface::isLightTheme()
+{
+    qDebug() << "isLightTheme";
+    ui->pushButtonNext->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    ui->pushButtonPlayPause->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    ui->pushButtonPlaylistMode->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    ui->pushButtonPrevious->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    ui->pushButtonRewindLeft->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    ui->pushButtonRewindRight->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+    ui->pushButtonStop->setStyleSheet("QPushButton:hover:!pressed { background-color: #f5f7fa; }");
+}
