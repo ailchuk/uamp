@@ -17,6 +17,25 @@ libraryformdialog::libraryformdialog(QWidget *parent) :
     setupMenu();
 }
 
+void libraryformdialog::loadPlaylists()
+{
+    auto save = m_db->loadPlaylists();
+
+    qDebug() << save.size();
+    if (save.size() <= 0)
+        return ;
+
+    MyTreeWidgetItem *topLevelItem1 = new MyTreeWidgetItem(ui->treeWidget, "New playlist", "");
+    ui->treeWidget->addTopLevelItem(topLevelItem1);
+    topLevelItem1->setText(0, save.begin()->first);
+
+    for (const auto &it : save)
+    {
+        MyTreeWidgetItem::addToItemHandler(ui->treeWidget->currentItem(), it.first, it.second);
+    }
+}
+
+
 void libraryformdialog::setupMenu() {
     m_menu.addAction("Rename playlist", this, []() {
 
@@ -33,7 +52,7 @@ void libraryformdialog::on_pushButtonOpenDir_clicked()
     QStringList trackPath = QFileDialog::getOpenFileNames(this,
                             tr("Open files"),
                             QString(),
-                            tr("Audio Files (*.mp3; *.flac)"));
+                            tr("Audio Files (*.mp3; *.flac; *.m3u)"));
 
     foreach (QString filePath, trackPath) {
         if (true/* add SQL querry here */) {
@@ -83,7 +102,25 @@ void libraryformdialog::on_pushButtonNewPlaylist_clicked()
 
 void libraryformdialog::on_pushButtonSavePlaylist_clicked()
 {
+    QTreeWidgetItem* item = ui->treeWidget->currentItem();
+    QMediaPlaylist *playlist = new QMediaPlaylist;
+    QString filename = QFileDialog::getSaveFileName(this, "Save file", "", "*.m3u");
 
+    if (filename != nullptr)
+    {
+        for (int i = 0; i < item->childCount(); ++i)
+        {
+            MyTreeWidgetItem *items = dynamic_cast<MyTreeWidgetItem *>(item->child(i));
+
+            playlist->addMedia(QUrl(items->Path));
+            qDebug() << QString(items->Path);
+        }
+        playlist->save(QUrl::fromLocalFile(filename), "m3u");
+    }
+
+    m_db->SavePlaylist(filename, item->text(0));
+
+    delete playlist;
 }
 
 void libraryformdialog::on_pushButtonDelete_clicked()

@@ -30,6 +30,7 @@ void MainWindow::connectActions() {
 
     connect(ui->actionOpenLibrary, &QAction::triggered, this, [this]() {
         this->m_libraryform->show();
+        m_libraryform->loadPlaylists();
     });
 }
 

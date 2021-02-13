@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "QMenu"
+#include "database.h"
 
 namespace Ui {
 class libraryformdialog;
@@ -16,7 +17,12 @@ class libraryformdialog : public QDialog
 
 public:
     explicit libraryformdialog(QWidget *parent = nullptr);
+
     ~libraryformdialog();
+
+    void setDataBase(DataBase *db) { m_db = db; }
+
+    void loadPlaylists();
 
 private slots:
     void on_pushButtonOpenDir_clicked();
@@ -38,6 +44,7 @@ private:
 
     MainWindow* m_main_window = nullptr;
     QMenu m_menu;
+    DataBase *m_db;
 
 private:
     void setupMenu();
