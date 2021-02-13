@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
+    <width>673</width>
     <height>241</height>
    </rect>
   </property>
@@ -30,6 +30,13 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButtonImportPlaylist">
+         <property name="text">
+          <string>Import playlist</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QPushButton" name="pushButtonOpenDir">
          <property name="text">

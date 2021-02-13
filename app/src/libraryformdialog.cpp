@@ -19,19 +19,42 @@ libraryformdialog::libraryformdialog(QWidget *parent) :
 
 void libraryformdialog::loadPlaylists()
 {
+//    m_db->PrintPlaylist();
     auto save = m_db->loadPlaylists();
 
     qDebug() << save.size();
     if (save.size() <= 0)
         return ;
 
-    MyTreeWidgetItem *topLevelItem1 = new MyTreeWidgetItem(ui->treeWidget, "New playlist", "");
-    ui->treeWidget->addTopLevelItem(topLevelItem1);
-    topLevelItem1->setText(0, save.begin()->first);
-
     for (const auto &it : save)
     {
-        MyTreeWidgetItem::addToItemHandler(ui->treeWidget->currentItem(), it.first, it.second);
+        if (ui->treeWidget->findItems(it.first, Qt::MatchContains|Qt::MatchRecursive, 0).size() > 0)
+        {
+            qDebug() << "find a copy, skipped";
+            continue;
+        }
+
+        if (it.second != nullptr)
+        {
+            QFile file(it.second);
+            file.open(QIODevice::ReadOnly | QIODevice::Text);
+            QTextStream in(&file);
+            QString line = in.readLine();
+            MyTreeWidgetItem *topLevelItem1 = new MyTreeWidgetItem(ui->treeWidget, "Item", "");
+
+            topLevelItem1->setText(0, QFileInfo(it.second).baseName());
+            ui->treeWidget->addTopLevelItem(topLevelItem1);
+            ui->treeWidget->setCurrentItem(topLevelItem1);
+
+            while (!line.isNull())
+            {
+                MyTreeWidgetItem::addToItemHandler(ui->treeWidget->currentItem(), QDir(line).dirName(), line);
+
+                line = in.readLine();
+            }
+            file.close();
+        }
+        qDebug() << ">>>>>>>>>>>> Load from db playlists\n";
     }
 }
 
@@ -52,11 +75,10 @@ void libraryformdialog::on_pushButtonOpenDir_clicked()
     QStringList trackPath = QFileDialog::getOpenFileNames(this,
                             tr("Open files"),
                             QString(),
-                            tr("Audio Files (*.mp3; *.flac; *.m3u)"));
+                            tr("Audio Files (*.mp3; *.flac;)"));
 
     foreach (QString filePath, trackPath) {
         if (true/* add SQL querry here */) {
-            QString fileName = QDir(filePath).dirName();
             MyTreeWidgetItem::addToItemHandler(ui->treeWidget->currentItem(), QDir(filePath).dirName(), filePath);
         }
     }
@@ -118,7 +140,10 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
         playlist->save(QUrl::fromLocalFile(filename), "m3u");
     }
 
-    m_db->SavePlaylist(filename, item->text(0));
+    bool save = m_db->SavePlaylist(filename, item->text(0));
+
+    if (!save)
+        QMessageBox::warning(this, "Warning!","Can't import playlist!");
 
     delete playlist;
 }
@@ -126,22 +151,89 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
 void libraryformdialog::on_pushButtonDelete_clicked()
 {
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
+
     if (item)
+    {
+        QString name = item->text(ui->treeWidget->currentColumn());
+
         item->~QTreeWidgetItem();
+        bool is = m_db->DeletePlaylist(name);
+        qDebug() << "--->>>> Delete " << name << "from DataBase" << is;
+    }
 }
 
 void libraryformdialog::on_pushButtonRenamePlaylist_clicked()
 {
 
     MyTreeWidgetItem *item = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
-    if (item->Path.begin() != item->Path.end())
+    QString name = nullptr;
+
+    if (!item || item->Path.begin() != item->Path.end())
+        return;
+
+    if (item)
+        name = item->text(ui->treeWidget->currentColumn());
+    else
         return;
 
     QString defaultText("new name");
     bool ok;
 
+    qDebug() << "Playlist before renaming";
+    m_db->PrintPlaylist();
+
     QString caseInput = QInputDialog::getText(this, tr("Rename"), ui->treeWidget->currentItem()->text(0), QLineEdit::Normal, defaultText, &ok);
     if (caseInput != nullptr) {
+        if (!name.isEmpty()) {
+        QString path = m_db->getPathPlaylist(name);
+        if (!path.isEmpty()) {
+            std::string new_path = QFileInfo(path).absolutePath().toStdString() + '/' + caseInput.toStdString() + ".m3u";
+            QFile::rename(path, QString::fromStdString(new_path));
+            m_db->DeletePlaylist(name);
+            m_db->SavePlaylist(QString::fromStdString(new_path), caseInput);
+            qDebug() << "new path: " << QString::fromStdString(new_path);
+        }
+
         ui->treeWidget->currentItem()->setText(0, caseInput);
+
+        qDebug() << "Rename playlist \n oldname: " << name << "new name: " << caseInput;
+        }
+    }
+    qDebug() << "Playlist after renaming";
+    m_db->PrintPlaylist();
+}
+
+void libraryformdialog::on_pushButtonImportPlaylist_clicked()
+{
+    QString path = QFileDialog::getOpenFileName(this, tr("Open m3u"), "", tr("(*.m3u)"));
+
+    if (path != nullptr)
+    {
+        QFile file(path);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream in(&file);
+        QString line = in.readLine();
+        bool added = m_db->SavePlaylist(path, QFileInfo(path).baseName());
+
+        if (added)
+        {
+            MyTreeWidgetItem *topLevelItem1 = new MyTreeWidgetItem(ui->treeWidget, "Item", "");
+
+            topLevelItem1->setText(0, QFileInfo(path).baseName());
+            ui->treeWidget->addTopLevelItem(topLevelItem1);
+            ui->treeWidget->setCurrentItem(topLevelItem1);
+
+            while (!line.isNull())
+            {
+                MyTreeWidgetItem::addToItemHandler(ui->treeWidget->currentItem(), QDir(line).dirName(), line);
+
+                line = in.readLine();
+            }
+            qDebug() << ">>>>>>>>>>>> Import playlist\n";
+        }
+        else
+        {
+            QMessageBox::warning(this, "Warning!","Can't import playlist!");
+        }
     }
 }

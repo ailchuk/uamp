@@ -20,7 +20,7 @@ public:
 
     ~libraryformdialog();
 
-    void setDataBase(DataBase *db) { m_db = db; }
+    void setDataBase(DataBase &db) { m_db = &db; }
 
     void loadPlaylists();
 
@@ -38,6 +38,8 @@ private slots:
     void on_pushButtonDelete_clicked();
 
     void on_pushButtonRenamePlaylist_clicked();
+
+    void on_pushButtonImportPlaylist_clicked();
 
 private:
     Ui::libraryformdialog *ui;

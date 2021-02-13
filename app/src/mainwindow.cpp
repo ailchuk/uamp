@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_libraryform = new libraryformdialog(this);
     m_libraryform->hide();
-    m_libraryform->setDataBase(m_db);
+    m_libraryform->setDataBase(*m_db);
 
     m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
 
