@@ -138,14 +138,14 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
             qDebug() << QString(items->Path);
         }
         playlist->save(QUrl::fromLocalFile(filename), "m3u");
-    }
 
-    bool save = m_db->SavePlaylist(filename, item->text(0));
+        bool save = m_db->SavePlaylist(filename, item->text(0));
 
-    if (!save)
-        QMessageBox::warning(this, "Warning!","Can't import playlist!");
+        if (!save)
+            QMessageBox::warning(this, "Warning!","Can't import playlist!");
 
-    delete playlist;
+        delete playlist;
+    }    
 }
 
 void libraryformdialog::on_pushButtonDelete_clicked()

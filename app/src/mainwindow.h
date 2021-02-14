@@ -19,6 +19,7 @@
 
 class MusicControlInterface;
 class libraryformdialog;
+class DTagMusic;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,10 +38,6 @@ public:
     DataBase *m_db; // database
 private slots:
 
-    void on_actionShow_tags_triggered();
-
-    void on_actionSave_playlist_triggered();
-
     void on_actionLight_triggered();
 
     void on_actionDark_triggered();
@@ -53,6 +50,7 @@ public:
     QMediaPlaylist          *m_playlist = nullptr;
     MusicControlInterface   *m_musiccontrolinterface = nullptr;
     libraryformdialog       *m_libraryform = nullptr;
+    DTagMusic               *m_dtag = nullptr;
 
 private:
     int m_duration;

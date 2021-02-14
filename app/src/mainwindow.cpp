@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include "musiccontrolinterface.h"
 #include "libraryformdialog.h"
+#include "dtagmusic.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,20 +22,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     connectActions();
 
+    this->ui->verticalLayout_3->setAlignment(Qt::AlignCenter);
+    this->ui->verticalLayout->setAlignment(Qt::AlignLeft);
     m_musiccontrolinterface = new MusicControlInterface(this);
-    this->ui->verticalLayout_2->addWidget(m_musiccontrolinterface);
+    this->ui->verticalLayout_3->addWidget(m_musiccontrolinterface);
     m_musiccontrolinterface->connectWithMainWinow(m_player, m_playlist);
 
     m_libraryform = new libraryformdialog(this);
     m_libraryform->hide();
     m_libraryform->setDataBase(*m_db);
 
+    m_dtag = new DTagMusic(this);
+    m_dtag->hide();
+
     m_db->loadQueue(m_playListModel, m_playlist); // loads last save queue
 
     // When you doubleclick on the track in the table set the track in the playlist
-    // TODO take tags prom file here
+    // TODO take tags from file here
     connect(ui->playlistView, &QTableView::doubleClicked, [this](const QModelIndex &index){
-        m_playlist->setCurrentIndex(index.row());        
+        m_playlist->setCurrentIndex(index.row());
+        QString path = m_playlist->currentMedia().request().url().toString();
+        m_dtag->setTagWindow(path);
+        ui->coverLabelImage->setPixmap(QPixmap::fromImage(m_dtag->m_coverImage));
         qDebug() << "=>>>>>>>>>> double click on playListView";
     });
 
@@ -83,8 +92,8 @@ void MainWindow::on_actionDark_triggered()
     ui->playlistView->setStyleSheet("QHeaderView::section { background-color:#323336 } color: white; background-color: #323336;");
     ui->pushButtonMute->setStyleSheet("QPushButton:hover:!pressed { background-color: #7e7f80; }");
     m_musiccontrolinterface->isDarkTheme();
-    ui->actionLight->setChecked(false);
     ui->actionDark->setChecked(true);
+    ui->actionLight->setChecked(false);    
 
     qDebug() << "dark theme";
 }
