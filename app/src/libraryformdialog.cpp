@@ -125,11 +125,15 @@ void libraryformdialog::on_pushButtonNewPlaylist_clicked()
 void libraryformdialog::on_pushButtonSavePlaylist_clicked()
 {
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
+    if (!item || item->childCount() < 1)
+        return;
     QMediaPlaylist *playlist = new QMediaPlaylist;
     QString filename = QFileDialog::getSaveFileName(this, "Save file", "", "*.m3u");
 
     if (filename != nullptr)
     {
+        qDebug() << item->childCount();
+
         for (int i = 0; i < item->childCount(); ++i)
         {
             MyTreeWidgetItem *items = dynamic_cast<MyTreeWidgetItem *>(item->child(i));
@@ -138,6 +142,7 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
             qDebug() << QString(items->Path);
         }
         playlist->save(QUrl::fromLocalFile(filename), "m3u");
+        item->setText(ui->treeWidget->currentColumn(), filename);
     }
 
     bool save = m_db->SavePlaylist(filename, item->text(0));
