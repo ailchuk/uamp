@@ -142,7 +142,7 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
             qDebug() << QString(items->Path);
         }
         playlist->save(QUrl::fromLocalFile(filename), "m3u");
-        item->setText(ui->treeWidget->currentColumn(), filename);
+        item->setText(ui->treeWidget->currentColumn(), QFileInfo(filename).baseName());
     }
 
     bool save = m_db->SavePlaylist(filename, item->text(0));
