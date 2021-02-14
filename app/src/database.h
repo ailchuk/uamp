@@ -42,6 +42,9 @@ public:
 
     bool SavePlaylist(const QString &path, const QString &name)
     {
+        if (!DeletePlaylist(name))
+            return false;
+
         QSqlQuery query;
 
         query.prepare(

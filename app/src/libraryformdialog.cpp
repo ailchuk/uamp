@@ -148,7 +148,7 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
     bool save = m_db->SavePlaylist(filename, item->text(0));
 
     if (!save)
-        QMessageBox::warning(this, "Warning!","Can't import playlist!");
+        QMessageBox::warning(this, "Warning!","Can't save playlist!");
 
     delete playlist;
 }
