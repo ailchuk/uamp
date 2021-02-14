@@ -125,8 +125,10 @@ void libraryformdialog::on_pushButtonNewPlaylist_clicked()
 void libraryformdialog::on_pushButtonSavePlaylist_clicked()
 {
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
-    if (!item || item->childCount() < 1)
+
+    if (!item || !(item->parent() == nullptr) || item->childCount() < 1)
         return;
+
     QMediaPlaylist *playlist = new QMediaPlaylist;
     QString filename = QFileDialog::getSaveFileName(this, "Save file", "", "*.m3u");
 
@@ -157,13 +159,19 @@ void libraryformdialog::on_pushButtonDelete_clicked()
 {
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
 
+    if (!item || !(item->parent() == nullptr))
+        return;
+
     if (item)
     {
         QString name = item->text(ui->treeWidget->currentColumn());
 
         item->~QTreeWidgetItem();
-        bool is = m_db->DeletePlaylist(name);
-        qDebug() << "--->>>> Delete " << name << "from DataBase" << is;
+        if (item->parent() == nullptr && item->childCount() > 0)
+        {
+            bool is = m_db->DeletePlaylist(name);
+            qDebug() << "--->>>> Delete " << name << "from DataBase" << is;
+        }
     }
 }
 
@@ -173,7 +181,7 @@ void libraryformdialog::on_pushButtonRenamePlaylist_clicked()
     MyTreeWidgetItem *item = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
     QString name = nullptr;
 
-    if (!item || item->Path.begin() != item->Path.end())
+    if (!item || !(item->parent() == nullptr) || item->Path.begin() != item->Path.end())
         return;
 
     if (item)
