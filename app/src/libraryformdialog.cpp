@@ -125,11 +125,17 @@ void libraryformdialog::on_pushButtonNewPlaylist_clicked()
 void libraryformdialog::on_pushButtonSavePlaylist_clicked()
 {
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
+
+    if (!item || !(item->parent() == nullptr) || item->childCount() < 1)
+        return;
+
     QMediaPlaylist *playlist = new QMediaPlaylist;
     QString filename = QFileDialog::getSaveFileName(this, "Save file", "", "*.m3u");
 
     if (filename != nullptr)
     {
+        qDebug() << item->childCount();
+
         for (int i = 0; i < item->childCount(); ++i)
         {
             MyTreeWidgetItem *items = dynamic_cast<MyTreeWidgetItem *>(item->child(i));
@@ -139,10 +145,13 @@ void libraryformdialog::on_pushButtonSavePlaylist_clicked()
         }
         playlist->save(QUrl::fromLocalFile(filename), "m3u");
 
+    }
+
         bool save = m_db->SavePlaylist(filename, item->text(0));
 
         if (!save)
             QMessageBox::warning(this, "Warning!","Can't import playlist!");
+
 
         delete playlist;
     }    
@@ -152,13 +161,19 @@ void libraryformdialog::on_pushButtonDelete_clicked()
 {
     QTreeWidgetItem* item = ui->treeWidget->currentItem();
 
+    if (!item || !(item->parent() == nullptr))
+        return;
+
     if (item)
     {
         QString name = item->text(ui->treeWidget->currentColumn());
 
         item->~QTreeWidgetItem();
-        bool is = m_db->DeletePlaylist(name);
-        qDebug() << "--->>>> Delete " << name << "from DataBase" << is;
+        if (item->parent() == nullptr && item->childCount() > 0)
+        {
+            bool is = m_db->DeletePlaylist(name);
+            qDebug() << "--->>>> Delete " << name << "from DataBase" << is;
+        }
     }
 }
 
@@ -168,7 +183,7 @@ void libraryformdialog::on_pushButtonRenamePlaylist_clicked()
     MyTreeWidgetItem *item = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
     QString name = nullptr;
 
-    if (!item || item->Path.begin() != item->Path.end())
+    if (!item || !(item->parent() == nullptr) || item->Path.begin() != item->Path.end())
         return;
 
     if (item)
