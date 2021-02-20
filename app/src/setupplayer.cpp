@@ -11,7 +11,7 @@ void MainWindow::setupPlayer() {
     // Volume control
     connect(ui->pushButtonMute, &QPushButton::clicked, m_player, [this](){
         m_muted = !m_muted;
-        (m_muted)?m_player->setVolume(0):m_player->setVolume(ui->verticalSliderVolume->value());
+        (m_muted) ? m_player->setVolume(0):m_player->setVolume(ui->verticalSliderVolume->value());
     });
 
     // подключаем кнопки управления к слотам управления

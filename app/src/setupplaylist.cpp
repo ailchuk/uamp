@@ -12,6 +12,4 @@ void MainWindow::setupPlaylistModel() {
     ui->playlistView->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
     ui->playlistView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->playlistView->horizontalHeader()->setStretchLastSection(true);
-//    ui->playlistView->set
-
 }

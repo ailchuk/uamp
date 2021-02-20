@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QTableWidget>
 #include "libraryformdialog.h"
+#include "dtagmusic.h"
 
 #define COLUMN_COUNT 2
 
@@ -31,6 +32,10 @@ void MainWindow::connectActions() {
     connect(ui->actionOpenLibrary, &QAction::triggered, this, [this]() {
         this->m_libraryform->show();
         m_libraryform->loadPlaylists();
+    });
+
+    connect(ui->actionOpenDtag, &QAction::triggered, this, [this]() {
+        this->m_dtag->show();
     });
 }
 
